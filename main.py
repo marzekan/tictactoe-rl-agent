@@ -75,17 +75,30 @@ class GameBoard(tk.Frame):
         self.train_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
 
         # Create and place labels
-        #self.train_label = tk.Label(self, text = "Agent još nije treniran", font='SegoeUI 10' )
+        # self.train_label = tk.Label(self, text = "Agent još nije treniran", font='SegoeUI 10' )
 
     def playerSetMove(self, buttonNumber):
         self.board.setting[buttonNumber] = self.playerSign
         boardButtons[buttonNumber].configure(
             text=self.playerSign, bg='blue', fg='red', state=tk.DISABLED)
         print(self.board.setting, "set move")
-        self.checkGameOver()
+
+        if self.checkGameOver():
+            return
+
+        self.agentSetMove()
 
     def agentSetMove(self):
         print("Agent radi potez")
+
+        self.agent.states = self.board.setting
+        self.agent.actions = self.agent.getAvailablePos()
+        print("\n", self.agent.actions, "\n")
+        pos = self.agent.makeRandomMove()
+        self.board.setting[pos] = self.agentSign
+
+        self.updateBoardSetting()
+        print(self.board.setting)
 
     def updateBoardSetting(self):
         for i in range(9):
@@ -104,6 +117,9 @@ class GameBoard(tk.Frame):
             print("Pobijedio je: ", winner)
             for i in range(9):
                 boardButtons[i].configure(state=tk.DISABLED)
+            return True
+        else:
+            False
             # ispisi pobjednika
 
     def reset(self):
