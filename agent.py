@@ -20,20 +20,23 @@ class Agent:
 
     def getAvailablePos(self) -> list:
         # Gets all possible available positions.
-        return [i for i, field in enumerate(self.states) if field == None]
+        # return [i for i, field in enumerate(self.states) if field == None]
 
-        # actions = []
-        # for i in range(len(self.states)):
-        #     if self.states[i] == None:
-        #         actions.append(i)
+        actions = []
+        for i in range(len(self.states)):
+            if self.states[i] == None:
+                actions.append(i)
 
-        # return actions
+        return actions
 
     def makeRandomMove(self):
         return self.actions[random.randrange(0, len(self.actions))]
 
     def makeMove(self):
         return self.strategy.chooseBestMove(self.sign, self.actions, self.states)
+
+    def beRewarded(self, value):
+        self.strategy.calculateReward(value)
 
     def printQ(self):
         print("Q stanja:")

@@ -12,7 +12,7 @@ class QLearning:
 
         self.historic_states = []
 
-    def chooseBestMove(self, agentSign, availablePos, board_setting):
+    def chooseBestMove(self, agentSign, availablePos, board_setting) -> int:
         # Will decide if agent uses QLearning for making a move or if he makes a random move.
         strategy_chance = random.uniform(0, 1)
 
@@ -47,15 +47,15 @@ class QLearning:
                     maxActionValue = action_value
                     bestMove = move
 
-                # Save current state.
-                boardSettingCopy = copy.copy(board_setting)
-                boardSettingCopy[bestMove] = agentSign
-                self.historic_states.append(str(boardSettingCopy))
+        # Save current state.
+        boardSettingCopy = copy.copy(board_setting)
+        boardSettingCopy[bestMove] = agentSign
+        self.historic_states.append(str(boardSettingCopy))
 
-                return bestMove
+        return bestMove
 
     # Contains Bellman equation implementation for Q learning.
-    def reward(self, reward_amount):
+    def calculateReward(self, reward_amount):
         # Iteratue through historic states.
         for state in reversed(self.historic_states):
 
@@ -64,7 +64,7 @@ class QLearning:
                 self.states[state] = 0
 
             # Calculate Q value (reward) for the move made.
-            self.states[state] += self.learningRate * \
+            self.states[state] += self.learn_rate * \
                 (self.decay * reward_amount - self.states[state])
             reward_amount = self.states[state]
 
