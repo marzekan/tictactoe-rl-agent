@@ -142,7 +142,6 @@ class GameBoard(tk.Frame):
     def reset(self):
         self.board.resetBoard()
         self.updateBoardSetting()
-        self.checkIfAgentTrained()
         if self.playerSign == "X":
             self.playerSign = "O"
             self.agentSign = "X"
@@ -152,6 +151,7 @@ class GameBoard(tk.Frame):
             self.agentSign = "O"
         self.statusLabel.configure(
             text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
+        self.checkIfAgentTrained()
 
     # start training the agent
     def startTraining(self):
@@ -161,9 +161,10 @@ class GameBoard(tk.Frame):
         # call training here
         simulation = Simulation()
 
-        for i in range(10000):
+        numberOfIterations = 10000
+        for i in range(numberOfIterations):
             simulation.simulateGame()
-            self.trainProgress(i, 10000)
+            self.trainProgress(i, numberOfIterations)
 
         simulation.agentX.saveQStates("trained_X.pkl")
         simulation.agentO.saveQStates("trained_O.pkl")
@@ -208,18 +209,19 @@ class GameBoard(tk.Frame):
             try:
                 self.agent.loadQStates("trained_O.pkl")
                 filesExists = True
+                print("O - Kružić")
             except IOError:
                 print("File not accessible")
         else:
             try:
                 self.agent.loadQStates("trained_X.pkl")
                 filesExists = True
+                print("X - Križić")
             except IOError:
                 print("File not accessible")
         if filesExists is True:
             self.progressLabel.configure(text="Agent is trained and ready to play.")
         return filesExists
-        pass
 
 
 if __name__ == "__main__":
