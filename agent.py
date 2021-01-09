@@ -1,11 +1,20 @@
 import random
+from brain import QLearning
 
 
 class Agent:
-    def __init__(self, setting, agentSign):
+    def __init__(self, setting, agentSign, strategy='random'):
 
         self.states = setting
         self.sign = agentSign
+
+        try:
+            strategy in ['random', 'q']
+        except Exception as e:
+            print("KRIVI STRATEGY JE PROSLJEDEN U KONSTRUKTOR")
+
+        if strategy == "q":
+            self.strategy = QLearning()
 
         self.actions = self.getAvailablePos()
 
@@ -18,10 +27,14 @@ class Agent:
         #     if self.states[i] == None:
         #         actions.append(i)
 
-        return actions
+        # return actions
 
     def makeRandomMove(self):
         return self.actions[random.randrange(0, len(self.actions))]
+
+    def makeMove(self):
+
+        pass
 
 
 # agent = Agent(setting=["x", "O", None, None, None,
