@@ -3,7 +3,7 @@ import copy
 
 
 class QLearning:
-    def __init__(self, learning_rate=0.1, decay=0.8, exploration_rate=0.2):
+    def __init__(self, learning_rate=0.1, decay=0.8, exploration_rate=0.1):
 
         self.learn_rate = learning_rate
         self.decay = decay
@@ -70,6 +70,9 @@ class QLearning:
 
     def saveQStates(self):
         pass
+
+    def resetHistoricStates(self):
+        self.historic_states = []
 
 
 # ql = QLearning()

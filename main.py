@@ -161,7 +161,7 @@ class GameBoard(tk.Frame):
         # call training here
         simulation = Simulation()
 
-        numberOfIterations = 5000
+        numberOfIterations = 200000
         for i in range(numberOfIterations):
             simulation.simulateGame()
             self.trainProgress(i, numberOfIterations)
