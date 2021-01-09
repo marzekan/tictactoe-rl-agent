@@ -177,8 +177,7 @@ class GameBoard(tk.Frame):
         self.reset_btn.configure(bg='gray', state=tk.DISABLED)
         self.train_btn.configure(bg='gray', state=tk.DISABLED)
         self.statusLabel.configure(text="Training in progress")
-        self.statusLabel.configure(
-            text="Training in progress")
+        self.statusLabel.update()
 
     # enable all buttons on the screen
     def setGuiToEndTraining(self):
@@ -193,14 +192,17 @@ class GameBoard(tk.Frame):
     # show iteration E.G. "00% 128/10000"
     def trainProgress(self, current, numberOfIterations):
         percentage = "{0:.0f}%".format(current/numberOfIterations * 100)
-        #self.progressLabel.configure(text=str(percentage) + " " + str(current) + "/" + str(numberOfIterations))
-        print(str(percentage)," ", str(current), "/", str(numberOfIterations))
-        
+        self.progressLabel.configure(
+            text=str(percentage) + " " + str(current) + "/" + str(numberOfIterations))
+        print(str(percentage), " ", str(current), "/", str(numberOfIterations))
+        if current % 100 == 0:
+            self.progressLabel.update()
 
     # check if .pkl file exists
+
     def checkIfAgentTrained(self):
         # insert file check here
-        #self.progressLabel.configure(text="Agent is trained and ready to play.")
+        # self.progressLabel.configure(text="Agent is trained and ready to play.")
         pass
 
 
