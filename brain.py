@@ -47,12 +47,15 @@ class QLearning:
                     maxActionValue = action_value
                     bestMove = move
 
-                # Save current state.
-                boardSettingCopy = copy.copy(board_setting)
-                boardSettingCopy[bestMove] = agentSign
-                self.historic_states.append(str(boardSettingCopy))
-
-                return bestMove
+        # Save current state.
+        boardSettingCopy = copy.copy(board_setting)
+        boardSettingCopy[bestMove] = agentSign
+        self.historic_states.append(str(boardSettingCopy))
+        if bestMove is None:
+            print("BEST MOVE IS: NONE BITCH")
+        else:
+            print("BEST MOVE IS: ", bestMove)
+        return bestMove
 
     # Contains Bellman equation implementation for Q learning.
     def reward(self, reward_amount):
