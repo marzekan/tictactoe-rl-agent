@@ -37,19 +37,15 @@ class Agent:
     def beRewarded(self, value):
         self.strategy.calculateReward(value)
 
-    def printQ(self):
-        print("Q stanja:")
-        print(self.strategy.states)
-
     # Saves Q values to pickle file.
     def saveQStates(self, file_name):
         Qvalues = self.strategy.states
-        with open("trained.pkl", "wb") as file:
+        with open(file_name, "wb") as file:
             pickle.dump(Qvalues, file)
 
     # Loads Q values from pickle file.
     def loadQStates(self, file_name):
-        with open("trained.pkl", "rb") as file:
+        with open(file_name, "rb") as file:
             Qvalues = pickle.load(file)
         self.strategy.states = Qvalues
 

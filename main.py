@@ -90,7 +90,6 @@ class GameBoard(tk.Frame):
         self.board.setting[buttonNumber] = self.playerSign
         boardButtons[buttonNumber].configure(
             text=self.playerSign, bg='blue', fg='red', state=tk.DISABLED)
-        print(self.board.setting, "set move")
 
         if self.checkGameOver():
             return
@@ -98,12 +97,10 @@ class GameBoard(tk.Frame):
         self.agentSetMove()
 
     def agentSetMove(self):
-        print("Agent radi potez")
         sleep(0.2)
 
         self.agent.states = self.board.setting
         self.agent.actions = self.agent.getAvailablePos()
-        print("\n", self.agent.actions, "\n")
         # pos = self.agent.makeRandomMove()
         pos = self.agent.makeMove()
 
@@ -116,10 +113,7 @@ class GameBoard(tk.Frame):
 
         self.board.setting[pos] = self.agentSign
 
-        self.agent.printQ()
-
         self.updateBoardSetting()
-        print(self.board.setting)
 
     def updateBoardSetting(self):
         for i in range(9):
@@ -133,9 +127,7 @@ class GameBoard(tk.Frame):
 
     def checkGameOver(self):
         if self.board.isGameOver() is True:
-            print("Igra gotova")
             winner = self.board.checkWin()
-            print("Pobijedio je: ", winner)
             for i in range(9):
                 boardButtons[i].configure(state=tk.DISABLED)
             if winner is None:
@@ -159,7 +151,6 @@ class GameBoard(tk.Frame):
             self.agentSign = "O"
         self.statusLabel.configure(
             text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
-        print(self.board.setting, "reset")
 
     # start training the agent
     def startTraining(self):
@@ -186,6 +177,8 @@ class GameBoard(tk.Frame):
         self.reset_btn.configure(bg='gray', state=tk.DISABLED)
         self.train_btn.configure(bg='gray', state=tk.DISABLED)
         self.statusLabel.configure(text="Training in progress")
+        self.statusLabel.configure(
+            text="Training in progress")
 
     # enable all buttons on the screen
     def setGuiToEndTraining(self):
@@ -198,15 +191,17 @@ class GameBoard(tk.Frame):
         self.checkIfAgentTrained()
 
     # show iteration E.G. "00% 128/10000"
-    def trainProgress(self):
-        print("00% 128/10000")
-        pass
+    def trainProgress(self, current, numberOfIterations):
+        percentage = "{0:.0f}%".format(current/numberOfIterations * 100)
+        #self.progressLabel.configure(text=str(percentage) + " " + str(current) + "/" + str(numberOfIterations))
+        print(str(percentage)," ", str(current), "/", str(numberOfIterations))
+        
 
     # check if .pkl file exists
     def checkIfAgentTrained(self):
         # insert file check here
-        self.progressLabel.configure(
-            text="Agent is trained and ready to play.")
+        #self.progressLabel.configure(text="Agent is trained and ready to play.")
+        pass
 
 
 if __name__ == "__main__":

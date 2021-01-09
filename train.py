@@ -11,7 +11,6 @@ class Simulation:
         self.agentO = Agent(self.board.setting, "O", strategy="q")
 
     def simulateGame(self):
-
         while self.board.isGameOver() is False:
 
             self.agentX.states = self.board.setting
