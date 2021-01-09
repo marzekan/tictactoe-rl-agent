@@ -3,7 +3,7 @@ import copy
 
 
 class QLearning:
-    def __init__(self, learning_rate=0.1, decay=0.8, exploration_rate=0.1):
+    def __init__(self, learning_rate=0.1, decay=0.8, exploration_rate=0.2):
 
         self.learn_rate = learning_rate
         self.decay = decay
@@ -51,10 +51,7 @@ class QLearning:
         boardSettingCopy = copy.copy(board_setting)
         boardSettingCopy[bestMove] = agentSign
         self.historic_states.append(str(boardSettingCopy))
-        if bestMove is None:
-            print("BEST MOVE IS: NONE BITCH")
-        else:
-            print("BEST MOVE IS: ", bestMove)
+
         return bestMove
 
     # Contains Bellman equation implementation for Q learning.
@@ -70,6 +67,9 @@ class QLearning:
             self.states[state] += self.learn_rate * \
                 (self.decay * reward_amount - self.states[state])
             reward_amount = self.states[state]
+
+    def saveQStates(self):
+        pass
 
 
 # ql = QLearning()

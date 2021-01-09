@@ -58,8 +58,8 @@ class GameBoard(tk.Frame):
 
         # Create and place Status label
         self.statusLabel = tk.Label(self.boardFrame, height=5, width=6,
-                                   text="You: " + self.playerSign + "\nAgent: " + self.agentSign, 
-                                   font='SegoeUI 10', fg="green", bg="white")
+                                    text="You: " + self.playerSign + "\nAgent: " + self.agentSign,
+                                    font='SegoeUI 10', fg="green", bg="white")
         self.statusLabel.grid(row=5, column=0, columnspan=3, sticky="ew")
 
         # Place buttons
@@ -99,6 +99,13 @@ class GameBoard(tk.Frame):
         print("\n", self.agent.actions, "\n")
         # pos = self.agent.makeRandomMove()
         pos = self.agent.makeMove()
+
+        if self.board.checkWin() == self.agent.sign:
+            self.agent.beRewarded(1)
+        elif self.board.checkWin() == self.playerSign:
+            self.agent.beRewarded(-1)
+        else:
+            self.agent.beRewarded(0.1)
 
         self.board.setting[pos] = self.agentSign
 
@@ -144,7 +151,8 @@ class GameBoard(tk.Frame):
         else:
             self.playerSign = "X"
             self.agentSign = "O"
-        self.statusLabel.configure(text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
+        self.statusLabel.configure(
+            text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
         print(self.board.setting, "reset")
 
     # pokazi iteraciju npr 128/10000 i postotak
