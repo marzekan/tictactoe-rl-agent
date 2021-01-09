@@ -33,8 +33,7 @@ class Agent:
         return self.actions[random.randrange(0, len(self.actions))]
 
     def makeMove(self):
-
-        pass
+        self.strategy.chooseBetsMove(self.sign, self.actions, self.states)
 
 
 # agent = Agent(setting=["x", "O", None, None, None,
