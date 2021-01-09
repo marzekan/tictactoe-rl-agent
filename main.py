@@ -3,6 +3,7 @@ import tkinter as tk
 from time import sleep
 from rules import Board
 from agent import Agent
+from train import Simulation
 
 # setting = [None, None, None, None, None, None, None, None, None]
 boardButtons = []
@@ -50,7 +51,7 @@ class GameBoard(tk.Frame):
                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(7)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(8)))
-        
+
         # Place board buttons
         boardButtons[0].grid(row=2, column=0)
         boardButtons[1].grid(row=2, column=1)
@@ -62,7 +63,6 @@ class GameBoard(tk.Frame):
         boardButtons[7].grid(row=4, column=1)
         boardButtons[8].grid(row=4, column=2)
 
-
         # Create and place Status label
         self.statusLabel = tk.Label(self.boardFrame, height=5, width=6,
                                     text="You: " + self.playerSign + "\nAgent: " + self.agentSign,
@@ -70,7 +70,7 @@ class GameBoard(tk.Frame):
         self.statusLabel.grid(row=5, column=0, columnspan=3, sticky="ew")
 
         # Create and place command buttons
-        
+
         self.reset_btn = tk.Button(self.boardFrame, height=2, width=16, text='RESET GAME',
                                    font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.reset())
         self.train_btn = tk.Button(self.boardFrame, height=2, width=16, text='TRAIN AGENT',
@@ -81,8 +81,8 @@ class GameBoard(tk.Frame):
 
         # Create and place training label
         self.progressLabel = tk.Label(self.boardFrame, height=1, width=6,
-                                    text="Agent is not treined yet.",
-                                    font='SegoeUI 10', fg="green", bg="white")
+                                      text="Agent is not treined yet.",
+                                      font='SegoeUI 10', fg="green", bg="white")
         self.checkIfAgentTrained()
         self.progressLabel.grid(row=8, column=0, columnspan=3, sticky="ew")
 
@@ -165,8 +165,16 @@ class GameBoard(tk.Frame):
     def startTraining(self):
         self.board.resetBoard()
         self.setGuiToStartTraining()
-        
+
         # call training here
+        simulation = Simulation()
+
+        for i in range(10000):
+            simulation.simulateGame()
+            self.trainProgress(i, 10000)
+
+        simulation.agentX.saveQStates("trained_X.pkl")
+        simulation.agentO.saveQStates("trained_O.pkl")
 
         self.setGuiToEndTraining()
         pass
@@ -185,7 +193,8 @@ class GameBoard(tk.Frame):
             boardButtons[i].configure(state=tk.NORMAL)
         self.reset_btn.configure(bg='green', state=tk.NORMAL)
         self.train_btn.configure(bg='green', state=tk.NORMAL)
-        self.statusLabel.configure(text="Training ended.\nPress restart to start game")
+        self.statusLabel.configure(
+            text="Training ended.\nPress restart to start game")
         self.checkIfAgentTrained()
 
     # show iteration E.G. "00% 128/10000"
@@ -196,7 +205,8 @@ class GameBoard(tk.Frame):
     # check if .pkl file exists
     def checkIfAgentTrained(self):
         # insert file check here
-        self.progressLabel.configure(text="Agent is trained and ready to play.")
+        self.progressLabel.configure(
+            text="Agent is trained and ready to play.")
 
 
 if __name__ == "__main__":
