@@ -12,7 +12,7 @@ class QLearning:
 
         self.historic_states = []
 
-    def chooseBetsMove(self, agentSign, availablePos, board_setting):
+    def chooseBestMove(self, agentSign, availablePos, board_setting):
         # Will decide if agent uses QLearning for making a move or if he makes a random move.
         strategy_chance = random.uniform(0, 1)
 
