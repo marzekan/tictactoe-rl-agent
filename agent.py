@@ -1,9 +1,10 @@
 import random
+import pickle
 from brain import QLearning
 
 
 class Agent:
-    def __init__(self, setting, agentSign, strategy='random'):
+    def __init__(self, setting, agentSign, strategy='random', loadSaved=False):
 
         self.states = setting
         self.sign = agentSign
@@ -16,12 +17,13 @@ class Agent:
         if strategy == "q":
             self.strategy = QLearning()
 
+        if loadSaved == True:
+            self.loadQStates()
+
         self.actions = self.getAvailablePos()
 
     def getAvailablePos(self) -> list:
         # Gets all possible available positions.
-        # return [i for i, field in enumerate(self.states) if field == None]
-
         actions = []
         for i in range(len(self.states)):
             if self.states[i] == None:
@@ -41,6 +43,18 @@ class Agent:
     def printQ(self):
         print("Q stanja:")
         print(self.strategy.states)
+
+    # Saves Q values to pickle file.
+    def saveQStates(self):
+        Qvalues = self.strategy.states
+        with open("trained.pkl", "wb") as file:
+            pickle.dump(Qvalues, file)
+
+    # Loads Q values from pickle file.
+    def loadQStates(self):
+        with open("trained.pkl", "rb") as file:
+            Qvalues = pickle.load(file)
+        self.strategy.states = Qvalues
 
 # agent = Agent(setting=["x", "O", None, None, None,
 #                        None, None, None, None], agentSign="O")
