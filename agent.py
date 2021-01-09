@@ -33,8 +33,11 @@ class Agent:
         return self.actions[random.randrange(0, len(self.actions))]
 
     def makeMove(self):
-        self.strategy.chooseBetsMove(self.sign, self.actions, self.states)
+        return self.strategy.chooseBestMove(self.sign, self.actions, self.states)
 
+    def printQ(self):
+        print("Q stanja:")
+        print(self.strategy.states)
 
 # agent = Agent(setting=["x", "O", None, None, None,
 #                        None, None, None, None], agentSign="O")

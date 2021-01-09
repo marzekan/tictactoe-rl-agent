@@ -19,7 +19,7 @@ class GameBoard(tk.Frame):
         self.board = Board()
         self.playerSign = "X"
         self.agentSign = "O"
-        self.agent = Agent(self.board.setting, self.agentSign)
+        self.agent = Agent(self.board.setting, self.agentSign, strategy="q")
 
         self.createBoard()
 
@@ -94,8 +94,12 @@ class GameBoard(tk.Frame):
         self.agent.states = self.board.setting
         self.agent.actions = self.agent.getAvailablePos()
         print("\n", self.agent.actions, "\n")
-        pos = self.agent.makeRandomMove()
+        # pos = self.agent.makeRandomMove()
+        pos = self.agent.makeMove()
+
         self.board.setting[pos] = self.agentSign
+
+        self.agent.printQ()
 
         self.updateBoardSetting()
         print(self.board.setting)
@@ -133,6 +137,12 @@ class GameBoard(tk.Frame):
             self.playerSign = "X"
             self.agentSign = "O"
         print(self.board.setting, "reset")
+
+    # pokazi iteraciju npr 128/10000 i postotak
+    #  disableaj sve gumbe na ekranu, korisnik nemre nis radit.
+
+    def trainProgress(self):
+        pass
 
 
 if __name__ == "__main__":

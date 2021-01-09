@@ -45,7 +45,7 @@ class QLearning:
                 # If action value of the move is max, declare that move as the best move.
                 if action_value > maxActionValue:
                     maxActionValue = action_value
-                    bestMove = availablePos
+                    bestMove = move
 
                 # Save current state.
                 boardSettingCopy = copy.copy(board_setting)
@@ -67,3 +67,10 @@ class QLearning:
             self.states[state] += self.learningRate * \
                 (self.decay * reward_amount - self.states[state])
             reward_amount = self.states[state]
+
+
+# ql = QLearning()
+# pos = ql.chooseBestMove("X", [2, 3, 4, 6, 7, 8], [
+#                         "X", "O", None, "X", None, None, None, None])
+
+# print(pos)
