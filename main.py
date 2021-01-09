@@ -50,19 +50,8 @@ class GameBoard(tk.Frame):
                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(7)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(8)))
-
-        self.reset_btn = tk.Button(self.boardFrame, height=2, width=16, text='RESET GAME',
-                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.reset())
-        self.train_btn = tk.Button(self.boardFrame, height=2, width=16, text='TRAIN AGENT',
-                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.trainProgress())
-
-        # Create and place Status label
-        self.statusLabel = tk.Label(self.boardFrame, height=5, width=6,
-                                    text="You: " + self.playerSign + "\nAgent: " + self.agentSign,
-                                    font='SegoeUI 10', fg="green", bg="white")
-        self.statusLabel.grid(row=5, column=0, columnspan=3, sticky="ew")
-
-        # Place buttons
+        
+        # Place board buttons
         boardButtons[0].grid(row=2, column=0)
         boardButtons[1].grid(row=2, column=1)
         boardButtons[2].grid(row=2, column=2)
@@ -73,11 +62,29 @@ class GameBoard(tk.Frame):
         boardButtons[7].grid(row=4, column=1)
         boardButtons[8].grid(row=4, column=2)
 
+
+        # Create and place Status label
+        self.statusLabel = tk.Label(self.boardFrame, height=5, width=6,
+                                    text="You: " + self.playerSign + "\nAgent: " + self.agentSign,
+                                    font='SegoeUI 10', fg="green", bg="white")
+        self.statusLabel.grid(row=5, column=0, columnspan=3, sticky="ew")
+
+        # Create and place command buttons
+        
+        self.reset_btn = tk.Button(self.boardFrame, height=2, width=16, text='RESET GAME',
+                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.reset())
+        self.train_btn = tk.Button(self.boardFrame, height=2, width=16, text='TRAIN AGENT',
+                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.startTraining())
+
         self.reset_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
         self.train_btn.grid(row=7, column=0, columnspan=3, sticky='ew')
 
-        # Create and place labels
-        # self.train_label = tk.Label(self, text = "Agent još nije treniran", font='SegoeUI 10' )
+        # Create and place training label
+        self.progressLabel = tk.Label(self.boardFrame, height=1, width=6,
+                                    text="Agent is not treined yet.",
+                                    font='SegoeUI 10', fg="green", bg="white")
+        self.checkIfAgentTrained()
+        self.progressLabel.grid(row=8, column=0, columnspan=3, sticky="ew")
 
     def playerSetMove(self, buttonNumber):
         self.board.setting[buttonNumber] = self.playerSign
@@ -138,8 +145,7 @@ class GameBoard(tk.Frame):
             self.statusLabel.configure(text=statusText)
             return True
         else:
-            False
-            # ispisi pobjednika
+            return False
 
     def reset(self):
         self.board.resetBoard()
@@ -155,12 +161,42 @@ class GameBoard(tk.Frame):
             text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
         print(self.board.setting, "reset")
 
-    # pokazi iteraciju npr 128/10000 i postotak
-    #  disableaj sve gumbe na ekranu, korisnik nemre nis radit.
+    # start training the agent
+    def startTraining(self):
+        self.board.resetBoard()
+        self.setGuiToStartTraining()
+        
+        # call training here
 
-    def trainProgress(self):
-        print("TrainProgress function")
+        self.setGuiToEndTraining()
         pass
+
+    # disable all buttons on the screen
+    def setGuiToStartTraining(self):
+        for i in range(9):
+            boardButtons[i].configure(state=tk.DISABLED)
+        self.reset_btn.configure(bg='gray', state=tk.DISABLED)
+        self.train_btn.configure(bg='gray', state=tk.DISABLED)
+        self.statusLabel.configure(text="Training in progress")
+
+    # enable all buttons on the screen
+    def setGuiToEndTraining(self):
+        for i in range(9):
+            boardButtons[i].configure(state=tk.NORMAL)
+        self.reset_btn.configure(bg='green', state=tk.NORMAL)
+        self.train_btn.configure(bg='green', state=tk.NORMAL)
+        self.statusLabel.configure(text="Training ended.\nPress restart to start game")
+        self.checkIfAgentTrained()
+
+    # show iteration E.G. "00% 128/10000"
+    def trainProgress(self):
+        print("00% 128/10000")
+        pass
+
+    # check if .pkl file exists
+    def checkIfAgentTrained(self):
+        # insert file check here
+        self.progressLabel.configure(text="Agent is trained and ready to play.")
 
 
 if __name__ == "__main__":
