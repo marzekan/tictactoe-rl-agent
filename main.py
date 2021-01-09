@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from time import sleep
 from rules import Board
 from agent import Agent
 
@@ -30,11 +31,6 @@ class GameBoard(tk.Frame):
         self.boardFrame = tk.Frame(self, bg="black")
         self.boardFrame.grid(row=0, column=0, columnspan=3, sticky='ew')
 
-        # Create and place Title label
-        self.titlelabel = tk.Label(self.boardFrame, height=2, width=6,
-                                   text="TIC TAC TOE", font='SegoeUI 20 bold', fg="white", bg="black")
-        self.titlelabel.grid(row=0, column=0, columnspan=3, sticky="ew")
-
         # Create buttons
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(0)))
@@ -58,7 +54,13 @@ class GameBoard(tk.Frame):
         self.reset_btn = tk.Button(self.boardFrame, height=2, width=16, text='RESET GAME',
                                    font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.reset())
         self.train_btn = tk.Button(self.boardFrame, height=2, width=16, text='TRAIN AGENT',
-                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.reset())
+                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.trainProgress())
+
+        # Create and place Status label
+        self.statusLabel = tk.Label(self.boardFrame, height=5, width=6,
+                                   text="You: " + self.playerSign + "\nAgent: " + self.agentSign, 
+                                   font='SegoeUI 10', fg="green", bg="white")
+        self.statusLabel.grid(row=5, column=0, columnspan=3, sticky="ew")
 
         # Place buttons
         boardButtons[0].grid(row=2, column=0)
@@ -71,8 +73,8 @@ class GameBoard(tk.Frame):
         boardButtons[7].grid(row=4, column=1)
         boardButtons[8].grid(row=4, column=2)
 
-        self.reset_btn.grid(row=5, column=0, columnspan=3, sticky='ew')
-        self.train_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
+        self.reset_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
+        self.train_btn.grid(row=7, column=0, columnspan=3, sticky='ew')
 
         # Create and place labels
         # self.train_label = tk.Label(self, text = "Agent još nije treniran", font='SegoeUI 10' )
@@ -90,6 +92,7 @@ class GameBoard(tk.Frame):
 
     def agentSetMove(self):
         print("Agent radi potez")
+        sleep(0.2)
 
         self.agent.states = self.board.setting
         self.agent.actions = self.agent.getAvailablePos()
@@ -121,6 +124,11 @@ class GameBoard(tk.Frame):
             print("Pobijedio je: ", winner)
             for i in range(9):
                 boardButtons[i].configure(state=tk.DISABLED)
+            if winner is None:
+                statusText = "It's a draw."
+            else:
+                statusText = "Game over!\nThe winner is:" + winner
+            self.statusLabel.configure(text=statusText)
             return True
         else:
             False
@@ -136,12 +144,14 @@ class GameBoard(tk.Frame):
         else:
             self.playerSign = "X"
             self.agentSign = "O"
+        self.statusLabel.configure(text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
         print(self.board.setting, "reset")
 
     # pokazi iteraciju npr 128/10000 i postotak
     #  disableaj sve gumbe na ekranu, korisnik nemre nis radit.
 
     def trainProgress(self):
+        print("TrainProgress function")
         pass
 
 

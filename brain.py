@@ -51,7 +51,10 @@ class QLearning:
         boardSettingCopy = copy.copy(board_setting)
         boardSettingCopy[bestMove] = agentSign
         self.historic_states.append(str(boardSettingCopy))
-
+        if bestMove is None:
+            print("BEST MOVE IS: NONE BITCH")
+        else:
+            print("BEST MOVE IS: ", bestMove)
         return bestMove
 
     # Contains Bellman equation implementation for Q learning.
