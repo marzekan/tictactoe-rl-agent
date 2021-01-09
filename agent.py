@@ -19,8 +19,8 @@ class Agent:
 
         self.actions = self.getAvailablePos()
 
+    # Gets all possible available positions.
     def getAvailablePos(self) -> list:
-        # Gets all possible available positions.
         actions = []
         for i in range(len(self.states)):
             if self.states[i] == None:
@@ -48,14 +48,3 @@ class Agent:
         with open(file_name, "rb") as file:
             Qvalues = pickle.load(file)
         self.strategy.states = Qvalues
-
-# agent = Agent(setting=["x", "O", None, None, None,
-#                        None, None, None, None], agentSign="O")
-
-
-# # [2,3,4,5,6,7,8]
-
-# print(agent.getAvailablePos())
-# print(agent.makeRandomMove())
-
-# []

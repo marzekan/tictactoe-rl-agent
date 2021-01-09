@@ -17,10 +17,8 @@ class QLearning:
         strategy_chance = random.uniform(0, 1)
 
         if strategy_chance <= self.exploration_rate:
-
             # If strategy_chance is less then or equal to exploration_rate then make random move.
             bestMove = availablePos[random.randrange(0, len(availablePos))]
-
         else:
             # Initialize as some small number.
             maxActionValue = -1000
@@ -73,10 +71,3 @@ class QLearning:
 
     def resetHistoricStates(self):
         self.historic_states = []
-
-
-# ql = QLearning()
-# pos = ql.chooseBestMove("X", [2, 3, 4, 6, 7, 8], [
-#                         "X", "O", None, "X", None, None, None, None])
-
-# print(pos)
