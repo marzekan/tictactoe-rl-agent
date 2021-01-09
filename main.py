@@ -24,6 +24,7 @@ class GameBoard(tk.Frame):
         self.agent = Agent(self.board.setting, self.agentSign, strategy="q")
 
         self.createBoard()
+        self.checkIfAgentTrained()
 
         self.pack(fill="both")
 
@@ -83,7 +84,6 @@ class GameBoard(tk.Frame):
         self.progressLabel = tk.Label(self.boardFrame, height=1, width=6,
                                       text="Agent is not treined yet.",
                                       font='SegoeUI 10', fg="green", bg="white")
-        self.checkIfAgentTrained()
         self.progressLabel.grid(row=8, column=0, columnspan=3, sticky="ew")
 
     def playerSetMove(self, buttonNumber):
@@ -142,6 +142,7 @@ class GameBoard(tk.Frame):
     def reset(self):
         self.board.resetBoard()
         self.updateBoardSetting()
+        self.checkIfAgentTrained()
         if self.playerSign == "X":
             self.playerSign = "O"
             self.agentSign = "X"
@@ -202,7 +203,22 @@ class GameBoard(tk.Frame):
 
     def checkIfAgentTrained(self):
         # insert file check here
-        # self.progressLabel.configure(text="Agent is trained and ready to play.")
+        filesExists = False
+        if self.agent.sign == "O":
+            try:
+                self.agent.loadQStates("trained_O.pkl")
+                filesExists = True
+            except IOError:
+                print("File not accessible")
+        else:
+            try:
+                self.agent.loadQStates("trained_X.pkl")
+                filesExists = True
+            except IOError:
+                print("File not accessible")
+        if filesExists is True:
+            self.progressLabel.configure(text="Agent is trained and ready to play.")
+        return filesExists
         pass
 
 
