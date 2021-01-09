@@ -161,12 +161,12 @@ class GameBoard(tk.Frame):
         # call training here
         simulation = Simulation()
 
-        numberOfIterations = 10000
+        numberOfIterations = 5000
         for i in range(numberOfIterations):
             simulation.simulateGame()
             self.trainProgress(i, numberOfIterations)
 
-        simulation.agentX.saveQStates("trained_X.pkl")
+        # simulation.agentX.saveQStates("trained_X.pkl")
         simulation.agentO.saveQStates("trained_O.pkl")
 
         self.setGuiToEndTraining()
@@ -205,22 +205,30 @@ class GameBoard(tk.Frame):
     def checkIfAgentTrained(self):
         # insert file check here
         filesExists = False
-        if self.agent.sign == "O":
-            try:
-                self.agent.loadQStates("trained_O.pkl")
-                filesExists = True
-                print("O - Kružić")
-            except IOError:
-                print("File not accessible")
-        else:
-            try:
-                self.agent.loadQStates("trained_X.pkl")
-                filesExists = True
-                print("X - Križić")
-            except IOError:
-                print("File not accessible")
+        try:
+            self.agent.loadQStates("trained_O.pkl")
+            filesExists = True
+            print("O - Kruzic")
+        except IOError:
+            print("File not accessible")
+
+        # if self.agent.sign == "O":
+        #     try:
+        #         self.agent.loadQStates("trained_O.pkl")
+        #         filesExists = True
+        #         print("O - Kružić")
+        #     except IOError:
+        #         print("File not accessible")
+        # else:
+        #     try:
+        #         self.agent.loadQStates("trained_X.pkl")
+        #         filesExists = True
+        #         print("X - Križić")
+        #     except IOError:
+        #         print("File not accessible")
         if filesExists is True:
-            self.progressLabel.configure(text="Agent is trained and ready to play.")
+            self.progressLabel.configure(
+                text="Agent is trained and ready to play.")
         return filesExists
 
 
