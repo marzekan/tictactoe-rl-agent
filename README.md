@@ -1,13 +1,13 @@
 # 🤖 TicTacToe agent based on Reinforcement leaning
 
-This project was made as a part of the _Inteligent Systems_ course at _Faculty of Organization and Informatics_. 
+This project was made as a part of the _Intelligent Systems_ course at _Faculty of Organization and Informatics_. 
 
 ## 🥅 Project goals
 
-The goal od this project was simple - to make agent learn to play the Tic-tac-toe game!
+The goal of this project was simple - to make agent learn to play the Tic-tac-toe game!
 
 
-![](pictures/tictactoe.gif)
+![playing_gif](pictures/tictactoe.gif)
 
 
 ## 📜 Docs
@@ -27,7 +27,7 @@ Following statements are true:
 
 Project supports agent training, code can be found in [train.py](https://github.com/marzekan/tictactoe-rl-agent/blob/main/train.py) file. 
 
-Agent training is achieved by placing 2 agent.py agents agains one another for some number of iterations.
+Agent training is achieved by placing 2 agent.py agents against one another for some number of iterations.
 For now the number of iterations is hardcoded on this [line](https://github.com/marzekan/tictactoe-rl-agent/blob/7e633b794ba5b0bbe9c42f993522326728ff4d4d/main.py#L152):
 
     numberOfIterations = 200000
