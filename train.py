@@ -5,7 +5,12 @@ from time import sleep
 
 
 class Simulation:
-
+    '''
+        Class constructor - returns empty object (None)
+        if wrong agent strategies parameters have been
+        passed.
+        Else objects is correctly instantiated.
+    '''
     def __new__(cls, agent_strategies):
         if agent_strategies not in ["RR", "RQ", "QR", "QQ"]:
             print("Wrong agent behaviour passed, must be: 'RR', 'RQ', 'QR' or 'QQ'.")
@@ -14,7 +19,6 @@ class Simulation:
             return object.__new__(cls)
 
     def __init__(self, agent_strategies):
-
         self.board = Board()
 
         '''
@@ -26,10 +30,6 @@ class Simulation:
             States represent learning strategy of agent that
             are being simulated.
         '''
-
-        # try:
-
-        # except Exception as e:
 
         strategy_X = ""
         strategy_O = ""

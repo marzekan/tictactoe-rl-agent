@@ -1,6 +1,6 @@
 import random
 import pickle
-from brain import QLearning
+from brain import QLearning, Random
 
 
 class Agent:
@@ -40,12 +40,11 @@ class Agent:
     def updateAvailablePos(self, positions):
         pass
 
-    def makeRandomMove(self):
-        return self.actions[random.randrange(0, len(self.actions))]
-
+    # Agent makes a move by choosing the best move from current strategy.
     def makeMove(self):
         return self.strategy.chooseBestMove(self.sign, self.actions, self.states)
 
+    # Reward agent if he is using the Q-learning strategy.
     def beRewarded(self, value):
         self.strategy.calculateReward(value)
 

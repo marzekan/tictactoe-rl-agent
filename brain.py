@@ -2,6 +2,23 @@ import random
 import copy
 
 
+class Random:
+    def __init__(self):
+        self.states = {}
+
+    def __makeRandomMove(self, availablePos) -> int:
+        return availablePos[random.randrange(0, len(availablePos))]
+
+    def chooseBestMove(self, agentSign, availablePos, board_setting) -> int:
+        return self.__makeRandomMove(availablePos)
+
+    def calculateReward(self, reward_amount):
+        pass
+
+    def resetHistoricStates(self):
+        pass
+
+
 class QLearning:
     def __init__(self, learning_rate=0.1, decay=0.8, exploration_rate=0.1):
 
@@ -65,9 +82,6 @@ class QLearning:
             self.states[state] += self.learn_rate * \
                 (self.decay * reward_amount - self.states[state])
             reward_amount = self.states[state]
-
-    def saveQStates(self):
-        pass
 
     def resetHistoricStates(self):
         self.historic_states = []

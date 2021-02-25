@@ -83,7 +83,7 @@ class GameBoard(tk.Frame):
                                       font='SegoeUI 10', fg="green", bg="white")
         self.progressLabel.grid(row=8, column=0, columnspan=3, sticky="ew")
 
-    # When player clicks on the board. Area is marked with players sign. 
+    # When player clicks on the board. Area is marked with players sign.
     # Afterwards player signals agent to play if the game is not over.
     def playerSetMove(self, buttonNumber):
         self.board.setting[buttonNumber] = self.playerSign
@@ -140,24 +140,28 @@ class GameBoard(tk.Frame):
     def reset(self):
         self.board.resetBoard()
         self.updateBoardSetting()
-        self.statusLabel.configure(text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
+        self.statusLabel.configure(
+            text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
         self.checkIfAgentTrained()
 
     # start training the agent
     def startTraining(self):
         self.board.resetBoard()
-        self.setGuiToStartTraining()
 
-        simulation = Simulation()
-        numberOfIterations = 200000
-        for i in range(numberOfIterations):
-            simulation.simulateGame()
-            self.trainProgress(i, numberOfIterations)
-        
-        simulation.agentO.saveQStates("trained_O.pkl")
+        simulation = Simulation("RR")
+        print(simulation)
+        if simulation != None:
+            self.setGuiToStartTraining()
 
-        self.setGuiToEndTraining()
-        pass
+            numberOfIterations = 2000
+
+            for i in range(numberOfIterations):
+                simulation.simulateGame()
+                self.trainProgress(i, numberOfIterations)
+
+            simulation.agentO.saveQStates("trained_O.pkl")
+
+            self.setGuiToEndTraining()
 
     # disable all buttons on the screen
     def setGuiToStartTraining(self):
