@@ -1,34 +1,43 @@
 import tkinter as tk
 
+boardButtons = []
 
 class GameGUI(tk.Frame):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, root=None):
+        tk.Frame.__init__(self, root)
 
-    def createBoard(self, reset_function, start_training, player_move):
+        self.master.title("Tic Tac Toe")
+        self.master.configure(background='black')
+        self.master.resizable(width=False, height=False)
+
+    def startGui(self):
+        self.pack(fill="both")
+        tk.mainloop()
+
+    def createBoard(self, playerSetMove, reset, startTraining, agentSign, playerSign):
         # Create Frames
         self.boardFrame = tk.Frame(self, bg="black")
         self.boardFrame.grid(row=0, column=0, columnspan=3, sticky='ew')
 
         # Create buttons
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(0)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(0)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(1)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(1)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(2)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(2)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(3)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(3)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(4)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(4)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(5)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(5)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(6)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(6)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(7)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(7)))
         boardButtons.append(tk.Button(self.boardFrame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: self.playerSetMove(8)))
+                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(8)))
 
         # Place board buttons
         boardButtons[0].grid(row=2, column=0)
@@ -43,15 +52,15 @@ class GameGUI(tk.Frame):
 
         # Create and place Status label
         self.statusLabel = tk.Label(self.boardFrame, height=5, width=6,
-                                    text="You: " + self.playerSign + "\nAgent: " + self.agentSign,
+                                    text="You: " + playerSign + "\nAgent: " + agentSign,
                                     font='SegoeUI 10 bold', fg="green", bg="white")
         self.statusLabel.grid(row=5, column=0, columnspan=3, sticky="ew")
 
         # Create and place command buttons
         self.reset_btn = tk.Button(self.boardFrame, height=2, width=16, text='RESET GAME',
-                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: reset_function())
+                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: reset())
         self.train_btn = tk.Button(self.boardFrame, height=2, width=16, text='TRAIN AGENT',
-                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: self.startTraining())
+                                   font='SegoeUI 10 bold', bg='green', fg='white', command=lambda: startTraining())
         self.reset_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
         self.train_btn.grid(row=7, column=0, columnspan=3, sticky='ew')
 
@@ -60,3 +69,49 @@ class GameGUI(tk.Frame):
                                       text="Agent is not treined yet.",
                                       font='SegoeUI 10', fg="green", bg="white")
         self.progressLabel.grid(row=8, column=0, columnspan=3, sticky="ew")
+
+    def updateBoardBySetting(self, setting):
+        for i in range(9):
+            if setting[i] is None:
+                boardButtons[i].configure(
+                    text=" ", bg='black', fg='white', state=tk.NORMAL)
+            else:
+                boardButtons[i].configure(
+                    text=setting[i], bg='blue', fg='red', state=tk.DISABLED)
+
+    def updateProgressLabel(self, text, current_value, refresh_rate=20):
+        self.progressLabel.configure(text)
+        if current_value % refresh_rate == 0:
+            self.progressLabel.update()
+
+    def updateProgressLabelText(self, text):
+        self.progressLabel.configure(text=text)
+
+    def updateStatusLabelText(self, statusText):
+        self.statusLabel.configure(text=statusText)
+
+    def disableAllBoardButtons(self):
+        for i in range(9):
+            boardButtons[i].configure(state=tk.DISABLED)
+
+    def setSignIntoBoardPosition(self, sign, position):
+        boardButtons[position].configure(
+            text=sign, bg='blue', fg='red', state=tk.DISABLED)
+
+    # disable all buttons on the screen
+    def setGuiToStartTraining(self):
+        for i in range(9):
+            boardButtons[i].configure(state=tk.DISABLED)
+        self.reset_btn.configure(bg='gray', state=tk.DISABLED)
+        self.train_btn.configure(bg='gray', state=tk.DISABLED)
+        self.statusLabel.configure(text="Training in progress")
+        self.statusLabel.update()
+
+    # enable all buttons on the screen
+    def setGuiToEndTraining(self):
+        for i in range(9):
+            boardButtons[i].configure(state=tk.NORMAL)
+        self.reset_btn.configure(bg='green', state=tk.NORMAL)
+        self.train_btn.configure(bg='green', state=tk.NORMAL)
+        self.statusLabel.configure(
+            text="Training ended.\nPress restart to start game")
