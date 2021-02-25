@@ -68,7 +68,6 @@ class GameBoard():
     def reset(self):
         self.board.resetBoard()
         self.updateBoardSetting()
-        #self.statusLabel.configure(text="You: " + self.playerSign + "\nAgent: " + self.agentSign)
         self.gui.updateStatusLabelText("You: " + self.playerSign + "\nAgent: " + self.agentSign)
         self.checkIfAgentTrained()
 
@@ -93,8 +92,8 @@ class GameBoard():
     # show iteration E.G. "00% 128/10000"
     def trainProgress(self, current, numberOfIterations):
         percentage = "{0:.0f}%".format(current/numberOfIterations * 100)
-        self.gui.updateProgressLabel(
-            str(percentage) + " " + str(current) + "/" + str(numberOfIterations), current)
+        progressMessage = str(percentage) + " " + str(current) + "/" + str(numberOfIterations)
+        self.gui.updateProgressLabel(progressMessage, current, 500)
         print(str(percentage), " ", str(current), "/", str(numberOfIterations))
 
     # check if .pkl file exists
