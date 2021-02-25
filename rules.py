@@ -59,6 +59,10 @@ class Board:
         else:
             return False
 
+    # Sets passed sign to passed position in bard array.
+    def setSignToPos(self, position, sign):
+        pass
+
     def resetBoard(self):
 
         # Reset the board to beggining state.

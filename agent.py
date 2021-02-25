@@ -28,6 +28,14 @@ class Agent:
 
         return actions
 
+    # Updates agent states on every agent move.
+    def updateStates(self, new_states):
+        pass
+
+    # Updates available positions every agent move.
+    def updateAvailablePos(self, positions):
+        pass
+
     def makeRandomMove(self):
         return self.actions[random.randrange(0, len(self.actions))]
 
