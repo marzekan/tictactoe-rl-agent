@@ -4,18 +4,22 @@ from brain import QLearning
 
 
 class Agent:
-    def __init__(self, setting, agentSign, strategy='random'):
+    def __new__(cls, setting, agentSign, strategy):
+        if strategy not in ['random', 'q']:
+            print("Passed agent strategy is not correct, must be: 'random' or 'q'.")
+            return None
+        else:
+            return object.__new__(cls)
+
+    def __init__(self, setting, agentSign, strategy):
 
         self.states = setting
         self.sign = agentSign
 
-        try:
-            strategy in ['random', 'q']
-        except Exception as e:
-            print("KRIVI STRATEGY JE PROSLJEDEN U KONSTRUKTOR")
-
         if strategy == "q":
             self.strategy = QLearning()
+        elif strategy == "random":
+            self.strategy = Random()
 
         self.actions = self.getAvailablePos()
 

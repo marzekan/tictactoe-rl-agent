@@ -3,19 +3,17 @@ from rules import Board
 
 from time import sleep
 
-# Simulation
-#   simulateGame
-#       opcije simulacije
-#           R - R
-#           R - Q
-#           Q - Q
-#
-#
-
 
 class Simulation:
 
-    def __init__(self, simulation_setting):
+    def __new__(cls, agent_strategies):
+        if agent_strategies not in ["RR", "RQ", "QR", "QQ"]:
+            print("Wrong agent behaviour passed, must be: 'RR', 'RQ', 'QR' or 'QQ'.")
+            return None
+        else:
+            return object.__new__(cls)
+
+    def __init__(self, agent_strategies):
 
         self.board = Board()
 
@@ -29,20 +27,31 @@ class Simulation:
             are being simulated.
         '''
 
-        try:
-            simulation_setting in ["RR", "RQ", "QQ"]
-        except Exception as e:
-            print("Wrong agent behaviour passed, must be: 'RR', 'RQ' or 'QQ'.")
-            return
+        # try:
+
+        # except Exception as e:
 
         strategy_X = ""
         strategy_O = ""
 
-        if simulation_setting == "RR":
-            pass
+        if agent_strategies == "RR":
+            strategy_X = "random"
+            strategy_O = "random"
 
-        self.agentX = Agent(self.board.setting, "X", strategy="q")
-        self.agentO = Agent(self.board.setting, "O", strategy="q")
+        elif agent_strategies == "RQ":
+            strategy_X = "random"
+            strategy_O = "q"
+
+        elif agent_strategies == "QR":
+            strategy_X = "q"
+            strategy_O = "random"
+
+        elif agent_strategies == "QQ":
+            strategy_X = "q"
+            strategy_O = "q"
+
+        self.agentX = Agent(self.board.setting, "X", strategy=strategy_X)
+        self.agentO = Agent(self.board.setting, "O", strategy=strategy_O)
 
     def simulateGame(self):
 
