@@ -62,7 +62,16 @@ class Agent:
             print("Wrong strategy passed, must be: 'random' or 'q'.")
             return
 
+    # Switches agent sign.
+    def switchSign(self):
+        if self.sign == "X":
+            self.sign = "O"
+
+        elif self.sign == "O":
+            self.sign = "X"
+
     # Saves Q values to pickle file.
+
     def saveQStates(self, file_name):
         Qvalues = self.strategy.states
         with open(file_name, "wb") as file:

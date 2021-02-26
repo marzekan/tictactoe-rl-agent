@@ -26,35 +26,20 @@ class Simulation:
         self.agentX = Agent(self.board.setting, "X")
         self.agentO = Agent(self.board.setting, "O")
 
+        '''
+            Implementation od simulateGame method is 
+            dynamically set based on passed agent_strategies 
+            parameter.
+
+            This way we can always call the same 'simulateGame'
+            method in other functions without needing to worry
+            about what game strategy agents use.
+        '''
         if agent_strategies == "QQ":
             self.simulateGame = self.__simulateQQGame
 
         elif agent_strategies == "RQ":
             self.simulateGame = self.__simulateRQGame
-
-        '''
-            Simulation setting can be one of 3 states:
-                RR (Random agent vs. Random agent)
-                RQ (Random agent vs. Q-learning agent)
-                QQ (Q-learning agent vs. Q-learning agent)
-
-            States represent learning strategy of agent that
-            are being simulated.
-        '''
-
-        # strategy_X = ""
-        # strategy_O = ""
-
-        # if agent_strategies == "RQ":
-        #     strategy_X = "random"
-        #     strategy_O = "q"
-
-        # elif agent_strategies == "QQ":
-        #     strategy_X = "q"
-        #     strategy_O = "q"
-
-        # self.agentX = Agent(self.board.setting, "X", strategy=strategy_X)
-        # self.agentO = Agent(self.board.setting, "O", strategy=strategy_O)
 
     # Agents play agains the agent with same strategy.
     def __simulateQQGame(self):
@@ -68,10 +53,10 @@ class Simulation:
 
         while self.board.isGameOver() is False:
 
-            self.agentX.states = self.board.setting
-            self.agentX.actions = self.agentX.getAvailablePos()
+            self.agentX.updateStates(self.board.setting)
+            self.agentX.updateAvailablePos()
             posX = self.agentX.makeMove()
-            self.board.setting[posX] = self.agentX.sign
+            self.board.setSignToPos(posX, self.agentX.sign)
 
             if self.board.checkWinner() == self.agentX.sign:
                 self.agentX.beRewarded(1)
@@ -87,10 +72,10 @@ class Simulation:
             if self.board.isGameOver() is True:
                 break
 
-            self.agentO.states = self.board.setting
-            self.agentO.actions = self.agentO.getAvailablePos()
+            self.agentO.updateStates(self.board.setting)
+            self.agentO.updateAvailablePos()
             posO = self.agentO.makeMove()
-            self.board.setting[posO] = self.agentO.sign
+            self.board.setSignToPos(posO, self.agentO.sign)
 
             if self.board.checkWinner() == self.agentO.sign:
                 self.agentO.beRewarded(1)
@@ -114,101 +99,88 @@ class Simulation:
 
         self.board.resetBoard()
 
-        self.agentX.setStrategy("random")
+        self.agentX.setStrategy("q")
         self.agentO.setStrategy("q")
+
+        # In this game agent takes turn playing against the random agent.
+        agent_rand = Agent(self.board.setting, "O", "random")
 
         while self.board.isGameOver() is False:
 
-            self.agentX.states = self.board.setting
-            self.agentX.actions = self.agentX.getAvailablePos()
+            self.agentX.updateStates(self.board.setting)
+            self.agentX.updateAvailablePos()
 
             posX = self.agentX.makeMove()
-            self.board.setting[posX] = self.agentX.sign
+            self.board.setSignToPos(posX, self.agentX.sign)
 
             if self.board.checkWinner() == self.agentX.sign:
                 self.agentX.beRewarded(1)
-                self.agentO.beRewarded(-1)
 
-            elif self.board.checkWinner() == self.agentO.sign:
+            elif self.board.checkWinner() == agent_rand.sign:
                 self.agentX.beRewarded(-1)
-                self.agentO.beRewarded(1)
             else:
                 self.agentX.beRewarded(0.1)
-                self.agentO.beRewarded(0.1)
 
             if self.board.isGameOver() is True:
                 break
 
-            self.agentO.states = self.board.setting
-            self.agentO.actions = self.agentO.getAvailablePos()
-            posO = self.agentO.makeMove()
-            self.board.setting[posO] = self.agentO.sign
+            agent_rand.updateStates(self.board.setting)
+            agent_rand.updateAvailablePos()
+            posRand = agent_rand.makeMove()
 
-            if self.board.checkWinner() == self.agentO.sign:
-                self.agentO.beRewarded(1)
+            self.board.setSignToPos(posRand, agent_rand.sign)
+
+            if self.board.checkWinner() == agent_rand.sign:
                 self.agentX.beRewarded(-1)
 
             elif self.board.checkWinner() == self.agentX.sign:
-                self.agentO.beRewarded(-1)
                 self.agentX.beRewarded(1)
 
             else:
-                self.agentO.beRewarded(0.1)
                 self.agentX.beRewarded(0.1)
 
-        self.agentO.strategy.resetHistoricStates()
+        agent_rand.strategy.resetHistoricStates()
         self.agentX.strategy.resetHistoricStates()
 
         self.board.resetBoard()
 
-        self.agentX.setStrategy("q")
-        self.agentO.setStrategy("random")
+        agent_rand.switchSign()
 
         while self.board.isGameOver() is False:
 
-            self.agentX.states = self.board.setting
-            self.agentX.actions = self.agentX.getAvailablePos()
+            agent_rand.updateStates(self.board.setting)
+            agent_rand.updateAvailablePos()
+            posRand = agent_rand.makeMove()
 
-            posX = self.agentX.makeMove()
-            self.board.setting[posX] = self.agentX.sign
+            self.board.setSignToPos(posRand, agent_rand.sign)
 
-            if self.board.checkWinner() == self.agentX.sign:
-                self.agentX.beRewarded(1)
+            if self.board.checkWinner() == agent_rand.sign:
                 self.agentO.beRewarded(-1)
 
             elif self.board.checkWinner() == self.agentO.sign:
-                self.agentX.beRewarded(-1)
                 self.agentO.beRewarded(1)
             else:
-                self.agentX.beRewarded(0.1)
                 self.agentO.beRewarded(0.1)
 
             if self.board.isGameOver() is True:
                 break
 
-            self.agentO.states = self.board.setting
-            self.agentO.actions = self.agentO.getAvailablePos()
+            self.agentO.updateStates(self.board.setting)
+            self.agentO.updateAvailablePos()
             posO = self.agentO.makeMove()
-            self.board.setting[posO] = self.agentO.sign
+            self.board.setSignToPos(posO, self.agentO.sign)
 
             if self.board.checkWinner() == self.agentO.sign:
                 self.agentO.beRewarded(1)
-                self.agentX.beRewarded(-1)
 
-            elif self.board.checkWinner() == self.agentX.sign:
+            elif self.board.checkWinner() == agent_rand.sign:
                 self.agentO.beRewarded(-1)
-                self.agentX.beRewarded(1)
 
             else:
                 self.agentO.beRewarded(0.1)
-                self.agentX.beRewarded(0.1)
 
         self.agentO.strategy.resetHistoricStates()
-        self.agentX.strategy.resetHistoricStates()
-
-    # Simulates one game.
-    def simulateGame(self):
-        pass
+        agent_rand.strategy.resetHistoricStates()
 
     def saveAgents(self):
 
@@ -216,6 +188,6 @@ class Simulation:
         datetime_str = now.strftime("%m_%d_%Y_%H_%M_%S")
 
         self.agentO.saveQStates(
-            f"trained_O_{str(self.agentO.strategy)}_{datetime_str}.pkl")
+            f"trained_O_{str(self.agent_strategies)}_{datetime_str}.pkl")
         self.agentX.saveQStates(
-            f"trained_X_{str(self.agentX.strategy)}_{datetime_str}.pkl")
+            f"trained_X_{str(self.agent_strategies)}_{datetime_str}.pkl")
