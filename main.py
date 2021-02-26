@@ -70,6 +70,7 @@ class GameBoard():
         self.updateBoardSetting()
         self.gui.updateStatusLabelText(
             "You: " + self.playerSign + "\nAgent: " + self.agentSign)
+        self.gui.setResetBtnToDefaultColor()
         self.checkIfAgentTrained()
 
     # start training the agent

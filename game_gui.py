@@ -22,6 +22,7 @@ class GameGUI(tk.Frame):
         self.honeydew_col = '#E0F2E9'
         self.red_col = '#FF4365'
         self.yellow_col = '#E8C547'
+        self.gray_col= '#71697A'
 
     def createBoard(self, playerSetMove, reset, startTraining, agent_sign, player_sign):
 
@@ -98,7 +99,7 @@ class GameGUI(tk.Frame):
         self.progress_label.configure(text=textProgress)
 
     def updateStatusLabelText(self, statusText):
-        self.status_label.configure(text=statusText, fg=self.red_col)
+        self.status_label.configure(text=statusText)
 
     def disableAllBoardButtons(self):
         for i in range(9):
@@ -112,9 +113,9 @@ class GameGUI(tk.Frame):
     def setGuiToStartTraining(self):
         for i in range(9):
             board_buttons[i].configure(state=tk.DISABLED)
-        self.reset_btn.configure(state=tk.DISABLED)
-        self.train_btn.configure(state=tk.DISABLED)
-        self.status_label.configure(text="Training in progress")
+        self.reset_btn.configure(bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
+        self.train_btn.configure(bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
+        self.updateStatusLabelText("Training in progress")
         self.progress_label.configure(fg=self.yellow_col)
         self.status_label.update()
 
@@ -122,8 +123,10 @@ class GameGUI(tk.Frame):
     def setGuiToEndTraining(self):
         for i in range(9):
             board_buttons[i].configure(bg=self.dark_blue_col, fg = self.honeydew_col, state=tk.NORMAL)
-        self.reset_btn.configure(bg=self.dark_blue_col, fg = self.yellow_col, state=tk.NORMAL)
-        self.train_btn.configure(bg=self.dark_blue_col, fg = self.red_col, state=tk.NORMAL)
-        self.status_label.configure( bg=self.dark_blue_col, fg=self.red_col,
-            text="Training ended.\nPress restart to start game")
+        self.reset_btn.configure(bg=self.yellow_col, fg = self.dark_blue_col, state=tk.NORMAL)
+        self.train_btn.configure(bg=self.red_col, fg = self.dark_blue_col, state=tk.NORMAL)
+        self.updateStatusLabelText("Training ended.\nPress restart to start game")
         self.progress_label.configure(fg=self.red_col)
+
+    def setResetBtnToDefaultColor(self):
+        self.reset_btn.configure(bg=self.red_col, fg = self.dark_blue_col)
