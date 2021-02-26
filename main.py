@@ -77,17 +77,19 @@ class GameBoard():
         self.board.resetBoard()
         self.gui.setGuiToStartTraining()
 
-        simulation = Simulation()
-        numberOfIterations = 200000
-        for i in range(numberOfIterations):
-            simulation.simulateGame()
-            self.trainProgress(i, numberOfIterations)
+        simulation = Simulation("RR")
 
-        simulation.agentO.saveQStates("trained_O.pkl")
+        if simulation is not None:
+            numberOfIterations = 200000
+            for i in range(numberOfIterations):
+                simulation.simulateGame()
+                self.trainProgress(i, numberOfIterations)
 
-        self.gui.setGuiToEndTraining()
-        self.checkIfAgentTrained()
-        pass
+            simulation.agentO.saveQStates("trained_O.pkl")
+
+            self.gui.setGuiToEndTraining()
+            self.checkIfAgentTrained()
+            pass
 
     # show iteration E.G. "00% 128/10000"
 
