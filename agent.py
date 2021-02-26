@@ -41,7 +41,7 @@ class Agent:
         self.actions = self.getAvailablePos()
 
     # Agent makes a move by choosing the best move from current strategy.
-    def makeMove(self):
+    def makeMove(self) -> int:
         return self.strategy.chooseBestMove(self.sign, self.actions, self.states)
 
     # Reward agent if he is using the Q-learning strategy.
