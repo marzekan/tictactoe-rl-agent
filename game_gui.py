@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+from typing import Callable
 
 board_buttons = []
 
@@ -23,9 +25,9 @@ class GameGUI(tk.Frame):
         self.honeydew_col = '#E0F2E9'
         self.red_col = '#FF4365'
         self.yellow_col = '#E8C547'
-        self.gray_col= '#71697A'
+        self.gray_col = '#71697A'
 
-    def createBoard(self, playerSetMove, reset, startTraining, agent_sign, player_sign):
+    def createBoard(self, playerSetMove, reset, agent_sign, player_sign):
 
         # Create Frames
         self.board_frame = tk.Frame(self, bg=self.dark_blue_col)
@@ -33,23 +35,23 @@ class GameGUI(tk.Frame):
 
         # Create buttons
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(0)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(0)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(1)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(1)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(2)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(2)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(3)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(3)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(4)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(4)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(5)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(5)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(6)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(6)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(7)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(7)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(8)))
+                                       font=self.font_big_bold, bg=self.dark_blue_col, fg=self.honeydew_col, command=lambda: playerSetMove(8)))
 
         # Place board buttons
         board_buttons[0].grid(row=2, column=0)
@@ -64,8 +66,8 @@ class GameGUI(tk.Frame):
 
         # Create and place Status label
         self.status_label = tk.Label(self.board_frame, height=5, width=6,
-                                    text="You: " + player_sign + "\nAgent: " + agent_sign,
-                                    font=self.font_normal_bold, fg=self.red_col, bg=self.dark_blue_col)
+                                     text="You: " + player_sign + "\nAgent: " + agent_sign,
+                                     font=self.font_normal_bold, fg=self.red_col, bg=self.dark_blue_col)
 
         self.status_label.grid(row=5, column=0, columnspan=3, sticky="ew")
 
@@ -73,14 +75,14 @@ class GameGUI(tk.Frame):
         self.reset_btn = tk.Button(self.board_frame, height=2, width=16, text='RESET GAME',
                                    font=self.font_normal_bold, bg=self.red_col, fg=self.dark_blue_col, command=lambda: reset())
         self.train_btn = tk.Button(self.board_frame, height=2, width=16, text='TRAIN AGENT',
-                                   font=self.font_normal_bold, bg=self.red_col, fg=self.dark_blue_col, command=lambda: startTraining())
+                                   font=self.font_normal_bold, bg=self.red_col, fg=self.dark_blue_col, command=lambda: self.build_traning_modal())
         self.reset_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
         self.train_btn.grid(row=7, column=0, columnspan=3, sticky='ew')
 
         # Create and place training label
         self.progress_label = tk.Label(self.board_frame, height=1, width=6,
-                                      text="Agent is not treined yet.",
-                                      font='SegoeUI 10', fg=self.red_col, bg=self.dark_blue_col)
+                                       text="Agent is not treined yet.",
+                                       font='SegoeUI 10', fg=self.red_col, bg=self.dark_blue_col)
 
         self.progress_label.grid(row=8, column=0, columnspan=3, sticky="ew")
 
@@ -116,8 +118,10 @@ class GameGUI(tk.Frame):
     def setGuiToStartTraining(self):
         for i in range(9):
             board_buttons[i].configure(state=tk.DISABLED)
-        self.reset_btn.configure(bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
-        self.train_btn.configure(bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
+        self.reset_btn.configure(
+            bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
+        self.train_btn.configure(
+            bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
         self.updateStatusLabelText("Training in progress")
         self.progress_label.configure(fg=self.yellow_col)
         self.status_label.update()
@@ -125,11 +129,61 @@ class GameGUI(tk.Frame):
     # enable all buttons on the screen
     def setGuiToEndTraining(self):
         for i in range(9):
-            board_buttons[i].configure(bg=self.dark_blue_col, fg = self.honeydew_col, state=tk.NORMAL)
-        self.reset_btn.configure(bg=self.yellow_col, fg = self.dark_blue_col, state=tk.NORMAL)
-        self.train_btn.configure(bg=self.red_col, fg = self.dark_blue_col, state=tk.NORMAL)
-        self.updateStatusLabelText("Training ended.\nPress restart to start game")
+            board_buttons[i].configure(
+                bg=self.dark_blue_col, fg=self.honeydew_col, state=tk.NORMAL)
+        self.reset_btn.configure(
+            bg=self.yellow_col, fg=self.dark_blue_col, state=tk.NORMAL)
+        self.train_btn.configure(
+            bg=self.red_col, fg=self.dark_blue_col, state=tk.NORMAL)
+        self.updateStatusLabelText(
+            "Training ended.\nPress restart to start game")
         self.progress_label.configure(fg=self.red_col)
 
     def setResetBtnToDefaultColor(self):
-        self.reset_btn.configure(bg=self.red_col, fg = self.dark_blue_col)
+        self.reset_btn.configure(bg=self.red_col, fg=self.dark_blue_col)
+
+    def build_traning_modal(self):
+
+        modal = TrainingModal(
+            self.master,
+            self.setGuiToStartTraining,
+            self.setGuiToEndTraining
+        )
+
+
+class TrainingModal(tk.Toplevel):
+    def __init__(self, master, lock_gui: Callable, unlock_gui: Callable):
+
+        self.main_gui_master = master
+        self.__lock_gui_function = lock_gui
+        self.__unlock_gui_function = unlock_gui
+
+        self.training_options = ["Q Agent vs. Q Agent",
+                                 "Random vs. Q Agent"
+                                 ]
+
+        self.base = tk.Toplevel()
+        self.base.title = "Agent training window"
+        self.base.geometry("300x250")
+        self.base.protocol("WM_DELETE_WINDOW", self.onClosing)
+
+        self.modal_frame = tk.Frame()
+
+        self.__buildDropdown()
+        self.__lock_gui_function()
+
+    def onClosing(self):
+        self.base.destroy()
+        self.__unlock_gui_function()
+
+    def __buildDropdown(self):
+        variable = tk.StringVar(self.main_gui_master)
+
+        # Default value
+        variable.set(self.training_options[0])
+
+        dropdown = tk.OptionMenu(self.main_gui_master,
+                                 variable,
+                                 *self.training_options
+                                 )
+        dropdown.pack()

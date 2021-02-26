@@ -15,7 +15,7 @@ class GameBoard():
 
         self.gui = GameGUI()
         self.gui.createBoard(self.playerSetMove, self.reset,
-                             self.startTraining, self.agentSign, self.playerSign)
+                             self.agentSign, self.playerSign)
 
         self.checkIfAgentTrained()
 
@@ -116,6 +116,9 @@ class GameBoard():
         #     self.gui.updateProgressLabelText(
         #         "Agent is trained and ready to play.")
         # return filesExists
+
+    # def openTrainingModal(self):
+    #     self.gui.build_traning_modal()
 
 
 if __name__ == "__main__":
