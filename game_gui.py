@@ -2,6 +2,7 @@ import tkinter as tk
 
 board_buttons = []
 
+
 class GameGUI(tk.Frame):
     def __init__(self, root=None):
         tk.Frame.__init__(self, root)
@@ -65,6 +66,7 @@ class GameGUI(tk.Frame):
         self.status_label = tk.Label(self.board_frame, height=5, width=6,
                                     text="You: " + player_sign + "\nAgent: " + agent_sign,
                                     font=self.font_normal_bold, fg=self.red_col, bg=self.dark_blue_col)
+
         self.status_label.grid(row=5, column=0, columnspan=3, sticky="ew")
 
         # Create and place command buttons
@@ -79,6 +81,7 @@ class GameGUI(tk.Frame):
         self.progress_label = tk.Label(self.board_frame, height=1, width=6,
                                       text="Agent is not treined yet.",
                                       font='SegoeUI 10', fg=self.red_col, bg=self.dark_blue_col)
+
         self.progress_label.grid(row=8, column=0, columnspan=3, sticky="ew")
 
     def updateBoardBySetting(self, setting):

@@ -6,6 +6,9 @@ class Random:
     def __init__(self):
         self.states = {}
 
+    def __str__(self):
+        return "random"
+
     def __makeRandomMove(self, availablePos) -> int:
         return availablePos[random.randrange(0, len(availablePos))]
 
@@ -28,6 +31,9 @@ class QLearning:
         self.states = {}
 
         self.historic_states = []
+
+    def __str__(self):
+        return "q"
 
     def chooseBestMove(self, agentSign, availablePos, board_setting) -> int:
         # Will decide if agent uses QLearning for making a move or if he makes a random move.
