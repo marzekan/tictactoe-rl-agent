@@ -33,8 +33,8 @@ class GameBoard():
     def agentSetMove(self):
         sleep(0.2)
 
-        self.agent.states = self.board.setting
-        self.agent.actions = self.agent.getAvailablePos()
+        self.agent.updateStates(self.board.setting)
+        self.agent.updateAvailablePos()
 
         pos = self.agent.makeMove()
 

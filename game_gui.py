@@ -2,6 +2,7 @@ import tkinter as tk
 
 board_buttons = []
 
+
 class GameGUI(tk.Frame):
     def __init__(self, root=None):
         tk.Frame.__init__(self, root)
@@ -21,23 +22,23 @@ class GameGUI(tk.Frame):
 
         # Create buttons
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(0)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(0)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(1)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(1)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(2)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(2)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(3)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(3)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(4)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(4)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(5)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(5)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(6)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(6)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(7)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(7)))
         board_buttons.append(tk.Button(self.board_frame, height=3, width=6, text=' ',
-                                      font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(8)))
+                                       font='SegoeUI 20 bold', bg='black', fg='white', command=lambda: playerSetMove(8)))
 
         # Place board buttons
         board_buttons[0].grid(row=2, column=0)
@@ -52,8 +53,8 @@ class GameGUI(tk.Frame):
 
         # Create and place Status label
         self.status_label = tk.Label(self.board_frame, height=5, width=6,
-                                    text="You: " + player_sign + "\nAgent: " + agent_sign,
-                                    font='SegoeUI 10 bold', fg="green", bg="white")
+                                     text="You: " + player_sign + "\nAgent: " + agent_sign,
+                                     font='SegoeUI 10 bold', fg="green", bg="white")
         self.status_label.grid(row=5, column=0, columnspan=3, sticky="ew")
 
         # Create and place command buttons
@@ -66,8 +67,8 @@ class GameGUI(tk.Frame):
 
         # Create and place training label
         self.progress_label = tk.Label(self.board_frame, height=1, width=6,
-                                      text="Agent is not treined yet.",
-                                      font='SegoeUI 10', fg="green", bg="white")
+                                       text="Agent is not treined yet.",
+                                       font='SegoeUI 10', fg="green", bg="white")
         self.progress_label.grid(row=8, column=0, columnspan=3, sticky="ew")
 
     def updateBoardBySetting(self, setting):

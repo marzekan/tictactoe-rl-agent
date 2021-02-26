@@ -33,12 +33,12 @@ class Agent:
         return actions
 
     # Updates agent states on every agent move.
-    def updateStates(self, new_states):
-        pass
+    def updateStates(self, board_setting):
+        self.states = board_setting
 
     # Updates available positions every agent move.
-    def updateAvailablePos(self, positions):
-        pass
+    def updateAvailablePos(self):
+        self.actions = self.getAvailablePos()
 
     # Agent makes a move by choosing the best move from current strategy.
     def makeMove(self):
