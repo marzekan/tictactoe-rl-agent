@@ -38,22 +38,25 @@ class Board:
         elif self.setting[2] == self.setting[4] == self.setting[6]:
             return self.setting[2]
 
-    # Checks if there is a win on the board.
-    def checkWin(self) -> str:
+    # Checks if there is a win on the board and returns winner.
+    def checkWinner(self) -> str:
 
         colWin, rowWin, diagonWin = self.checkColsWin(
         ), self.checkRowsWin(), self.checkDiagonalsWin()
 
-        for win in [colWin, rowWin, diagonWin]:
-            if win != None:
-                return win
+        for winner in [colWin, rowWin, diagonWin]:
+            if winner != None:
+                return winner
 
+    # Checks if there is a winner on the board returns true of there is.
     def isGameOver(self) -> bool:
 
-        if self.checkWin() != None:
+        # If there is no empty fields on the board -> game is over.
+        if None not in self.setting:
             return True
 
-        elif None not in self.setting:
+        # If there is a winner -> game is over.0
+        elif self.checkWinner() != None:
             return True
 
         else:

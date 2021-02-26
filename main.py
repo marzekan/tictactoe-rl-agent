@@ -36,42 +36,36 @@ class GameBoard():
         self.agent.updateStates(self.board.setting)
         self.agent.updateAvailablePos()
 
-        pos = self.agent.makeMove()
+        new_agent_position = self.agent.makeMove()
 
-        if self.board.checkWin() == self.agent.sign:
-            self.agent.beRewarded(1)
+        self.board.setSignToPos(new_agent_position, self.agentSign)
 
-        elif self.board.checkWin() == self.playerSign:
-            self.agent.beRewarded(-1)
-
-        else:
-            self.agent.beRewarded(0.1)
-
-        self.board.setSignToPos(pos, self.agentSign)
-
-        self.updateBoardSetting()
-
-    def updateBoardSetting(self):
         self.gui.updateBoardBySetting(self.board.setting)
+
         self.checkGameOver()
 
     def checkGameOver(self):
         if self.board.isGameOver() is True:
-            winner = self.board.checkWin()
+
+            winner = self.board.checkWinner()
+
             self.gui.disableAllBoardButtons()
+
             if winner is None:
                 statusText = "It's a draw."
+
             else:
                 statusText = "Game over!\nThe winner is:" + winner
+
             self.gui.updateStatusLabelText(statusText)
             return True
         else:
             return False
 
-    # resets the board anc checks if the agent is trained
+    # resets the board and checks if the agent is trained
     def reset(self):
         self.board.resetBoard()
-        self.updateBoardSetting()
+        self.gui.updateBoardBySetting(self.board.setting)
         self.gui.updateStatusLabelText(
             "You: " + self.playerSign + "\nAgent: " + self.agentSign)
         self.checkIfAgentTrained()
@@ -81,22 +75,22 @@ class GameBoard():
         self.board.resetBoard()
         self.gui.setGuiToStartTraining()
 
-        simulation = Simulation("RR")
+        simulation = Simulation("RQ")
 
         if simulation is not None:
-            numberOfIterations = 200000
+
+            numberOfIterations = 2000
+
             for i in range(numberOfIterations):
                 simulation.simulateGame()
                 self.trainProgress(i, numberOfIterations)
 
-            simulation.agentO.saveQStates("trained_O.pkl")
+            simulation.saveAgents()
 
             self.gui.setGuiToEndTraining()
             self.checkIfAgentTrained()
-            pass
 
     # show iteration E.G. "00% 128/10000"
-
     def trainProgress(self, current, numberOfIterations):
         percentage = "{0:.0f}%".format(current/numberOfIterations * 100)
         progressMessage = str(percentage) + " " + \
@@ -106,16 +100,21 @@ class GameBoard():
 
     # check if .pkl file exists
     def checkIfAgentTrained(self):
-        filesExists = False
+        # filesExists = False
         try:
             self.agent.loadQStates("trained_O.pkl")
-            filesExists = True
+            self.agent.turnOffExploration()
+            # filesExists = True
         except IOError:
             print("File not accessible")
-        if filesExists is True:
-            self.gui.updateProgressLabelText(
-                "Agent is trained and ready to play.")
-        return filesExists
+            return
+
+        self.gui.updateProgressLabelText("Agent is trained and ready to play.")
+
+        # if filesExists is True:
+        #     self.gui.updateProgressLabelText(
+        #         "Agent is trained and ready to play.")
+        # return filesExists
 
 
 if __name__ == "__main__":

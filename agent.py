@@ -4,14 +4,14 @@ from brain import QLearning, Random
 
 
 class Agent:
-    def __new__(cls, setting, agentSign, strategy):
+    def __new__(cls, setting, agentSign, strategy="random"):
         if strategy not in ['random', 'q']:
             print("Passed agent strategy is not correct, must be: 'random' or 'q'.")
             return None
         else:
             return object.__new__(cls)
 
-    def __init__(self, setting, agentSign, strategy):
+    def __init__(self, setting, agentSign, strategy="random"):
 
         self.states = setting
         self.sign = agentSign
@@ -47,6 +47,20 @@ class Agent:
     # Reward agent if he is using the Q-learning strategy.
     def beRewarded(self, value):
         self.strategy.calculateReward(value)
+
+    # Sets exploration_rate to 0 so that agent doesn't make random moves.
+    def turnOffExploration(self):
+        self.strategy.exploration_rate = 0
+
+    # Sets agent strategy.
+    def setStrategy(self, strategy):
+        if strategy == "random":
+            self.strategy = Random()
+        elif strategy == "q":
+            self.strategy = QLearning()
+        else:
+            print("Wrong strategy passed, must be: 'random' or 'q'.")
+            return
 
     # Saves Q values to pickle file.
     def saveQStates(self, file_name):
