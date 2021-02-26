@@ -22,7 +22,7 @@ class GameBoard():
     # When player clicks on the board. Area is marked with players sign.
     # Afterwards player signals agent to play if the game is not over.
     def playerSetMove(self, buttonNumber):
-        self.board.setting[buttonNumber] = self.playerSign
+        self.board.setSignToPos(buttonNumber, self.playerSign)
         self.gui.setSignIntoBoardPosition(self.playerSign, buttonNumber)
 
         if self.checkGameOver():
@@ -35,15 +35,19 @@ class GameBoard():
 
         self.agent.states = self.board.setting
         self.agent.actions = self.agent.getAvailablePos()
+
         pos = self.agent.makeMove()
+
         if self.board.checkWin() == self.agent.sign:
             self.agent.beRewarded(1)
+
         elif self.board.checkWin() == self.playerSign:
             self.agent.beRewarded(-1)
+
         else:
             self.agent.beRewarded(0.1)
 
-        self.board.setting[pos] = self.agentSign
+        self.board.setSignToPos(pos, self.agentSign)
 
         self.updateBoardSetting()
 
