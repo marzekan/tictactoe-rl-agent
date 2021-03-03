@@ -81,7 +81,7 @@ class GameGUI(tk.Frame):
 
         # Create and place training label
         self.progress_label = tk.Label(self.board_frame, height=1, width=6,
-                                       text="Agent is not treined yet.",
+                                       text="Agent is not trained yet.",
                                        font='SegoeUI 10', fg=self.red_col, bg=self.dark_blue_col)
 
         self.progress_label.grid(row=8, column=0, columnspan=3, sticky="ew")
@@ -165,63 +165,160 @@ class TrainingModal(tk.Toplevel):
             "RQ": "Random vs. Q Agent"
         }
 
+        # Training strategy information
+        self.strategy_info_text = {
+            "Q Agent vs. Q Agent": "Agent will learn by playing against itself using the Q - Learning strategy.",
+            "Random vs. Q Agent": "Agent will try to learn by playing an agent who only makes random moves (without Q-learning)."
+        }
+
         self.base = tk.Toplevel()
-        self.base.geometry("800x250")
+        self.base.geometry("450x250")
         self.base.resizable(width=False, height=False)
+        self.base.configure(background='white')
 
         self.base.protocol("WM_DELETE_WINDOW", self.__onClosing)
 
-        self.base.title = "Agent training window"
+        self.base.title("Agent training window")
 
         # Locking parent window when TrainingModal is created.
         self.__lock_gui_function()
 
         # Creating the frame to place all the widgets in.
-        self.modal_frame = self.__build_frame()
+        self.modal_frame = self.__create_frame()
+
+        # Declaring the strategy info label.
+        self.strategy_info_label: tk.Label
+
+        # Building the strategy info label and frame.
+        self.__build_strategy_info()
 
         # Building the dropdown modal component
-        self.__build_dropdown()
+        self.__build_dropdown(self.strategy_info_label)
 
-        # self.testLabel()
+    # def __print_test(self):
+    #     print(3*'\n', "TEST", 3*'\n')
 
-    def __print_test(self):
-        print(3*'\n', "TEST", 3*'\n')
+    # def testLabel(self, col: int):
+    #     label = tk.Label(self.modal_frame, text="test")
+    #     label.grid(row=0, column=col)
 
-    def testLabel(self):
-        label = tk.Label(self.modal_frame, text="test")
-        label.grid(row=0, column=1)
-        # label.pack()
+    def __build_strategy_info(self):
+        """Builds the label frame and label that describe the learning strategy
+           selected in the dropdown.
 
-    # Bulding the
-    def __build_frame(self) -> tk.Frame:
+           This component aims to explain user options back to the user.
+        """
 
-        frame = tk.Frame(self.base)
-        frame.grid(row=0, column=0, columnspan=2, rowspan=3, sticky='ew')
+        strategy_info_frame = tk.LabelFrame(
+            self.modal_frame,
+            text="Strategy info",
+            bg="white",
+            fg="green"
+        )
+
+        strategy_info_frame.grid(
+            row=0, column=2,
+            rowspan=4,
+            padx=(50, 5),
+            pady=(5, 5)
+        )
+
+        self.strategy_info_label = tk.Label(
+            strategy_info_frame,
+            width=25,
+            height=5,
+            text=next(iter(self.strategy_info_text.values())),
+            relief="flat",
+            background="white",
+            wraplength=150,
+            justify="left",
+        )
+
+        self.strategy_info_label.grid(
+            row=0, column=2,
+            rowspan=4,
+        )
+
+    # Bulding the modal frame to place other widgets.
+    def __create_frame(self) -> tk.Frame:
+        """Builds tkinter Frame that will contain all widgets of
+           the modal.
+
+            Returns:
+                tkinter.Frame (object)
+
+        """
+
+        frame = tk.Frame(self.base, bg="white")
+        frame.grid(row=0,
+                   column=0,
+                   columnspan=4,
+                   rowspan=10,
+                   sticky='ew')
+
+        frame.columnconfigure(0, minsize=30)
 
         return frame
 
     # Builds the dropdown component of the training modal.
-    def __build_dropdown(self):
+    def __build_dropdown(self, info_label):
+        """Builds the dropdown menu where the user can an agent
+            training strategy.
 
-        options = tk.StringVar(self.main_gui_master)
+        """
+
+        # Creating title label for the dropdown menu.
+        dropdown_label = tk.Label(self.modal_frame,
+                                  text="Pick agent training strategy:",
+                                  bg="white"
+                                  )
+        # Placing dropdown menu on the modal frame grid.
+        dropdown_label.grid(
+            row=0, column=0,
+            padx=(5, 5),
+            pady=(5, 0)
+        )
+
+        dropdown_options = tk.StringVar(self.main_gui_master)
 
         # Default value is 'q agent vs q agent'.
-        options.set(self.training_options['QQ'])
+        dropdown_options.set(self.training_options['QQ'])
 
         # Creating the dropdown element
         dropdown = tk.OptionMenu(self.modal_frame,
-                                 options,
-                                 *self.training_options.values()
+                                 dropdown_options,
+                                 *self.training_options.values(),
                                  )
 
-        # Placing the dropdown in the grid.
-        dropdown.grid(row=0, column=0)
+        dropdown.configure(
+            relief="flat",
+            bg="white",
+            width=20,
+            fg="green"
+        )
 
-        # dropdown.pack()
+        # Placing the dropdown in the grid.
+        dropdown.grid(
+            row=1, column=0,
+            padx=(10, 0),
+            sticky="ew"
+        )
+
+        # Inline function that updates the info label based on
+        # the strategy selected.
+        def update_info_label(*args):
+
+            user_selection = dropdown_options.get()
+
+            for option in self.training_options.values():
+                if option == user_selection:
+                    info_label.configure(text=self.strategy_info_text[option])
+
+        dropdown_options.trace('w', update_info_label)
 
     # Event callback that happens on closing the Training modal.
     def __onClosing(self):
-        """Event that handles destroying TrainingModal and 
+        """Event that handles destroying TrainingModal and
            unlocking parent UI window on TrainingModal close
            event.
 
