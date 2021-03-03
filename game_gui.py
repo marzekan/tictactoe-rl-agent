@@ -152,38 +152,79 @@ class GameGUI(tk.Frame):
 
 
 class TrainingModal(tk.Toplevel):
+
     def __init__(self, master, lock_gui: Callable, unlock_gui: Callable):
 
         self.main_gui_master = master
         self.__lock_gui_function = lock_gui
         self.__unlock_gui_function = unlock_gui
 
-        self.training_options = ["Q Agent vs. Q Agent",
-                                 "Random vs. Q Agent"
-                                 ]
+        # Training options.
+        self.training_options = {
+            "QQ": "Q Agent vs. Q Agent",
+            "RQ": "Random vs. Q Agent"
+        }
 
         self.base = tk.Toplevel()
+        self.base.geometry("800x250")
+        self.base.resizable(width=False, height=False)
+
+        self.base.protocol("WM_DELETE_WINDOW", self.__onClosing)
+
         self.base.title = "Agent training window"
-        self.base.geometry("300x250")
-        self.base.protocol("WM_DELETE_WINDOW", self.onClosing)
 
-        self.modal_frame = tk.Frame()
-
-        self.__buildDropdown()
+        # Locking parent window when TrainingModal is created.
         self.__lock_gui_function()
 
-    def onClosing(self):
+        # Creating the frame to place all the widgets in.
+        self.modal_frame = self.__build_frame()
+
+        # Building the dropdown modal component
+        self.__build_dropdown()
+
+        # self.testLabel()
+
+    def __print_test(self):
+        print(3*'\n', "TEST", 3*'\n')
+
+    def testLabel(self):
+        label = tk.Label(self.modal_frame, text="test")
+        label.grid(row=0, column=1)
+        # label.pack()
+
+    # Bulding the
+    def __build_frame(self) -> tk.Frame:
+
+        frame = tk.Frame(self.base)
+        frame.grid(row=0, column=0, columnspan=2, rowspan=3, sticky='ew')
+
+        return frame
+
+    # Builds the dropdown component of the training modal.
+    def __build_dropdown(self):
+
+        options = tk.StringVar(self.main_gui_master)
+
+        # Default value is 'q agent vs q agent'.
+        options.set(self.training_options['QQ'])
+
+        # Creating the dropdown element
+        dropdown = tk.OptionMenu(self.modal_frame,
+                                 options,
+                                 *self.training_options.values()
+                                 )
+
+        # Placing the dropdown in the grid.
+        dropdown.grid(row=0, column=0)
+
+        # dropdown.pack()
+
+    # Event callback that happens on closing the Training modal.
+    def __onClosing(self):
+        """Event that handles destroying TrainingModal and 
+           unlocking parent UI window on TrainingModal close
+           event.
+
+        """
         self.base.destroy()
         self.__unlock_gui_function()
-
-    def __buildDropdown(self):
-        variable = tk.StringVar(self.main_gui_master)
-
-        # Default value
-        variable.set(self.training_options[0])
-
-        dropdown = tk.OptionMenu(self.main_gui_master,
-                                 variable,
-                                 *self.training_options
-                                 )
-        dropdown.pack()
