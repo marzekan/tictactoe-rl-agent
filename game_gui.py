@@ -171,8 +171,13 @@ class TrainingModal(tk.Toplevel):
             "Random vs. Q Agent": "Agent will try to learn by playing an agent who only makes random moves (without Q-learning)."
         }
 
+        # Default info label text.
+        self.info_label_default = "Select strategy and number of iterations"
+
+        self.iteration_info_text = "Represents the number of games agent will play agains itself before playing you."
+
         self.base = tk.Toplevel()
-        self.base.geometry("450x250")
+        self.base.geometry("450x300")
         self.base.resizable(width=False, height=False)
         self.base.configure(background='white')
 
@@ -189,11 +194,27 @@ class TrainingModal(tk.Toplevel):
         # Declaring the strategy info label.
         self.strategy_info_label: tk.Label
 
+        # User selected strategy.
+        self.selected_strategy: str
+
+        # Number of training iterations that the user has selected.
+        self.selected_num_of_iter: int
+
+        # Create feedback label.
+        self.info_label = self.__create_info_label()
+
         # Building the strategy info label and frame.
         self.__build_strategy_info()
 
-        # Building the dropdown modal component
+        # Building the dropdown modal component.
         self.__build_dropdown(self.strategy_info_label)
+
+        # Building iterations selection textbox.
+        self.__build_iterations_textbox()
+
+        self.__build_iterations_info()
+
+        self.testbtn()
 
     # def __print_test(self):
     #     print(3*'\n', "TEST", 3*'\n')
@@ -202,13 +223,72 @@ class TrainingModal(tk.Toplevel):
     #     label = tk.Label(self.modal_frame, text="test")
     #     label.grid(row=0, column=col)
 
+    def getNumberOfIterations(self) -> int:
+        return self.selected_num_of_iter
+
+    def getSelectedStrategy(self) -> str:
+        return self.selected_strategy
+
+    def __set_selected_num_of_Iter(self, entry_text):
+
+        # Converts passed text to string.
+        entry_text = str(entry_text)
+
+        # Entry isn't number or larger then 0.
+        if not entry_text.isdecimal():
+
+            print("Iterations must be a number and larger then 0.")
+
+            self.info_label.configure(
+                foreground="red",
+                text="Iterations must be a number and larger then 0."
+            )
+
+            return
+
+        self.info_label.configure(
+            foreground="black",
+            text=self.info_label_default
+        )
+
+        return int(entry_text)
+
+    def print_data(self):
+        iter_number = self.__set_selected_num_of_Iter(
+            self.getNumberOfIterations())
+
+        strategy = self.getSelectedStrategy()
+
+        data = (iter_number, strategy)
+
+        if all(data):
+            print(data)
+            return data
+
+    def __create_info_label(self):
+
+        info_label = tk.Label(
+            self.modal_frame,
+            text=self.info_label_default,
+            bg="white"
+        )
+
+        info_label.grid(
+            row=12, column=0,
+            columnspan=4,
+            sticky="ew",
+            pady=(30, 0)
+        )
+
+        return info_label
+
+    # Build strategy info label.
     def __build_strategy_info(self):
         """Builds the label frame and label that describe the learning strategy
            selected in the dropdown.
 
            This component aims to explain user options back to the user.
         """
-
         strategy_info_frame = tk.LabelFrame(
             self.modal_frame,
             text="Strategy info",
@@ -239,21 +319,117 @@ class TrainingModal(tk.Toplevel):
             rowspan=4,
         )
 
+    # Build textbox where user enters iteration number.
+    def __build_iterations_textbox(self):
+
+        # Creating title label for the iteration entry.
+        iter_label = tk.Label(self.modal_frame,
+                              text="Enter number of iterations:",
+                              bg="white"
+                              )
+
+        # Placing dropdown menu on the modal frame grid.
+        iter_label.grid(
+            row=5, column=0,
+            padx=(5, 5),
+        )
+
+        # Frame containing label and Entry box for iteration number.
+        iter_frame = tk.Frame(self.modal_frame, bg="white")
+        iter_frame.grid(
+            row=6, column=0,
+            columnspan=2,
+            rowspan=1,
+            sticky="ew",
+            padx=(10, 0),
+        )
+
+        # Iteration entrybox prompt.
+        iter_entry_label = tk.Label(
+            iter_frame,
+            text="Num. iter:",
+            bg="white"
+        )
+
+        iter_entry_label.grid(
+            row=0, column=0,
+            padx=(5, 0),
+            pady=(0, 50)
+        )
+
+        # Variable that stores Entry text that is shown to the user.
+        entry_text = tk.StringVar()
+        entry_text.set("200000")
+
+        def on_change(entry_text):
+            self.selected_num_of_iter = entry_text.get()
+            return True
+
+        entry_text.trace_add("write", lambda name, index,
+                             mode, sv=entry_text: on_change(entry_text))
+
+        # Entry box for number of iterations.
+        iter_entry = tk.Entry(
+            iter_frame,
+            width=13,
+            relief="flat",
+            bg="ghost white",
+            fg="navy blue",
+            textvariable=entry_text,
+        )
+
+        iter_entry.grid(
+            row=0, column=1,
+            padx=(5, 0),
+            pady=(0, 50)
+        )
+
+        # Set number of training iterations to default begin value.
+        self.selected_num_of_iter = entry_text.get()
+
+    # Build iteration info label frame.
+    def __build_iterations_info(self):
+
+        strategy_info_frame = tk.LabelFrame(
+            self.modal_frame,
+            text="Iterations info",
+            bg="white",
+            fg="navy blue",
+        )
+
+        strategy_info_frame.grid(
+            row=4, column=2,
+            rowspan=4,
+            padx=(50, 5),
+            pady=(5, 5)
+        )
+
+        self.strategy_info_label = tk.Label(
+            strategy_info_frame,
+            width=25,
+            height=5,
+            text=self.iteration_info_text,
+            relief="flat",
+            background="white",
+            wraplength=150,
+            justify="left",
+        )
+
+        self.strategy_info_label.grid(
+            row=4, column=2,
+            rowspan=4,
+        )
+
     # Bulding the modal frame to place other widgets.
     def __create_frame(self) -> tk.Frame:
         """Builds tkinter Frame that will contain all widgets of
            the modal.
-
-            Returns:
-                tkinter.Frame (object)
-
         """
-
         frame = tk.Frame(self.base, bg="white")
         frame.grid(row=0,
                    column=0,
-                   columnspan=4,
-                   rowspan=10,
+                   columnspan=8,
+                   rowspan=12,
                    sticky='ew')
 
         frame.columnconfigure(0, minsize=30)
@@ -264,7 +440,6 @@ class TrainingModal(tk.Toplevel):
     def __build_dropdown(self, info_label):
         """Builds the dropdown menu where the user can an agent
             training strategy.
-
         """
 
         # Creating title label for the dropdown menu.
@@ -276,7 +451,6 @@ class TrainingModal(tk.Toplevel):
         dropdown_label.grid(
             row=0, column=0,
             padx=(5, 5),
-            pady=(5, 0)
         )
 
         dropdown_options = tk.StringVar(self.main_gui_master)
@@ -304,11 +478,14 @@ class TrainingModal(tk.Toplevel):
             sticky="ew"
         )
 
+        self.selected_strategy = dropdown_options.get()
+
         # Inline function that updates the info label based on
         # the strategy selected.
         def update_info_label(*args):
 
             user_selection = dropdown_options.get()
+            self.selected_strategy = user_selection
 
             for option in self.training_options.values():
                 if option == user_selection:
@@ -325,3 +502,18 @@ class TrainingModal(tk.Toplevel):
         """
         self.base.destroy()
         self.__unlock_gui_function()
+
+    # ================================================== #
+
+    def testbtn(self):
+
+        btn = tk.Button(self.modal_frame,
+                        text="Testme",
+                        bg="white",
+                        command=self.print_data
+                        )
+        btn.grid(
+            row=8, column=1,
+            columnspan=3,
+            rowspan=1
+        )
