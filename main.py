@@ -73,34 +73,6 @@ class GameBoard():
         self.gui.setResetBtnToDefaultColor()
         self.checkIfAgentTrained()
 
-    # start training the agent
-    def startTraining(self):
-        self.board.resetBoard()
-        self.gui.setGuiToStartTraining()
-
-        simulation = Simulation("RQ")
-
-        if simulation is not None:
-
-            numberOfIterations = 2000
-
-            for i in range(numberOfIterations):
-                simulation.simulateGame()
-                self.trainProgress(i, numberOfIterations)
-
-            simulation.saveAgents()
-
-            self.gui.setGuiToEndTraining()
-            self.checkIfAgentTrained()
-
-    # show iteration E.G. "00% 128/10000"
-    def trainProgress(self, current, numberOfIterations):
-        percentage = "{0:.0f}%".format(current/numberOfIterations * 100)
-        progressMessage = str(percentage) + " " + \
-            str(current) + "/" + str(numberOfIterations)
-        self.gui.updateProgressLabel(progressMessage, current, 500)
-        print(str(percentage), " ", str(current), "/", str(numberOfIterations))
-
     # check if .pkl file exists
     def checkIfAgentTrained(self):
 
@@ -119,14 +91,6 @@ class GameBoard():
             return
 
         self.gui.updateProgressLabelText("Agent is trained and ready to play.")
-
-        # if filesExists is True:
-        #     self.gui.updateProgressLabelText(
-        #         "Agent is trained and ready to play.")
-        # return filesExists
-
-    # def openTrainingModal(self):
-    #     self.gui.build_traning_modal()
 
 
 if __name__ == "__main__":

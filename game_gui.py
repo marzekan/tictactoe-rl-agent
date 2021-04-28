@@ -189,7 +189,7 @@ class TrainingModal(tk.Toplevel):
         self.iteration_info_text = "Represents the number of games agent will play agains itself before playing you."
 
         self.base = tk.Toplevel()
-        self.base.geometry("450x370")
+        self.base.geometry("450x375")
         self.base.resizable(width=False, height=False)
         self.base.configure(background='white')
 
@@ -239,14 +239,9 @@ class TrainingModal(tk.Toplevel):
 
         self.progress_label = self.__build_progress_label()
 
-    # def __print_test(self):
-    #     print(3*'\n', "TEST", 3*'\n')
-
-    # def testLabel(self, col: int):
-    #     label = tk.Label(self.modal_frame, text="test")
-    #     label.grid(row=0, column=col)
-
     def startTraining(self):
+
+        self.info_label.configure(text="Training...")
 
         self.train_btn.configure(
             bg="white",
@@ -283,6 +278,8 @@ class TrainingModal(tk.Toplevel):
             fg="white",
             text="Train!"
         )
+
+        self.info_label.configure(text="Done!", fg="green")
 
     def getNumberOfIterations(self) -> int:
         return self.selected_num_of_iter
@@ -326,6 +323,7 @@ class TrainingModal(tk.Toplevel):
             print(data)
             return data
 
+    # Gives user feedback about the app.
     def __create_info_label(self):
 
         info_label = tk.Label(
@@ -338,7 +336,7 @@ class TrainingModal(tk.Toplevel):
             row=12, column=0,
             columnspan=4,
             sticky="ew",
-            pady=(65, 0)
+            pady=(55, 0)
         )
 
         return info_label
@@ -393,7 +391,7 @@ class TrainingModal(tk.Toplevel):
         iter_label.grid(
             row=5, column=0,
             padx=(5, 5),
-            pady=(7, 0)
+            # pady=(0, 10)
         )
 
         # Frame containing label and Entry box for iteration number.
@@ -404,6 +402,7 @@ class TrainingModal(tk.Toplevel):
             rowspan=1,
             sticky="ew",
             padx=(10, 0),
+            pady=(0, 40)
         )
 
         # Iteration entrybox prompt.
@@ -513,6 +512,7 @@ class TrainingModal(tk.Toplevel):
         dropdown_label.grid(
             row=0, column=0,
             padx=(5, 5),
+            pady=(5, 0)
         )
 
         dropdown_options = tk.StringVar(self.main_gui_master)
@@ -537,7 +537,7 @@ class TrainingModal(tk.Toplevel):
         dropdown.grid(
             row=1, column=0,
             padx=(10, 0),
-            pady=(0, 0),
+            pady=(0, 50),
             sticky="ew"
         )
 
@@ -566,41 +566,6 @@ class TrainingModal(tk.Toplevel):
         self.base.destroy()
         self.__unlock_gui_function()
 
-    # def train_stop(self):
-
-    #     if self.train_in_progress:
-    #         self.train_in_progress = False
-    #         self.train_btn.configure(
-    #             text="Stop",
-    #             fg="red",
-    #             bg="white",
-    #         )
-    #         res = self.get_result_data()
-
-    #         self.make_progress(res[0])
-
-    #     else:
-    #         self.train_in_progress = True
-    #         self.train_btn.configure(
-    #             text="Train!",
-    #             fg="white",
-    #             bg="green",
-    #         )
-
-    #         # ako treniranje traje
-    #         #   zaustavi treniranje
-    #         #   gumb kaze: Train!
-    #         #   train in progress = False
-    #         #   Enableaj gumbe i entry
-
-    #         # Ako treniranje NE traje:
-    #         #   pokreni treniranje
-    #         #   gumb kaze: Stop
-    #         #   trian in progress = True
-    #         #   disableaj gumbe i entry
-
-    #     return
-
     def __build_progress_frame(self):
 
         progress_frame = tk.LabelFrame(
@@ -615,7 +580,7 @@ class TrainingModal(tk.Toplevel):
             columnspan=6,
             rowspan=3,
             sticky="ew",
-            pady=(20, 30)
+            pady=(30, 30)
         )
 
         progress_frame.grid_propagate(0)
@@ -696,14 +661,7 @@ class TrainingModal(tk.Toplevel):
             row=9, column=0,
             columnspan=4,
             rowspan=2,
-            pady=(10, 10)
+            pady=(10, 20)
         )
 
         return train_btn
-
-    # def make_progress(self, iter_num: int):
-    #
-    #     for i in range(iter_num):
-    #         self.progress_bar['value'] = i
-    #         # self.main_gui_master.update_idletasks()
-    #         self.base.update()
