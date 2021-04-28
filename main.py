@@ -4,6 +4,8 @@ from agent import Agent
 from train import Simulation
 from game_gui import GameGUI
 
+import os
+
 
 class GameBoard():
 
@@ -101,11 +103,17 @@ class GameBoard():
 
     # check if .pkl file exists
     def checkIfAgentTrained(self):
-        # filesExists = False
+
+        files = os.listdir('.')
+        save_file = ""
+
+        for file in files:
+            if "trained_O" in file:
+                save_file = file
         try:
-            self.agent.loadQStates("trained_O.pkl")
+            self.agent.loadQStates(save_file)
             self.agent.turnOffExploration()
-            # filesExists = True
+
         except IOError:
             print("File not accessible")
             return

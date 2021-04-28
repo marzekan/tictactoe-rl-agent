@@ -4,6 +4,8 @@ from tkinter import HORIZONTAL
 from typing import Callable
 from tkinter.ttk import Progressbar
 
+from train import Simulation
+
 board_buttons = []
 
 
@@ -187,7 +189,7 @@ class TrainingModal(tk.Toplevel):
         self.iteration_info_text = "Represents the number of games agent will play agains itself before playing you."
 
         self.base = tk.Toplevel()
-        self.base.geometry("450x305")
+        self.base.geometry("450x370")
         self.base.resizable(width=False, height=False)
         self.base.configure(background='white')
 
@@ -198,7 +200,9 @@ class TrainingModal(tk.Toplevel):
         # Locking parent window when TrainingModal is created.
         self.__lock_gui_function()
 
-        self.train_in_progress = True
+        # self.train_in_progress = True
+
+        self.progress_text = ""
 
         # Creating the frame to place all the widgets in.
         self.modal_frame = self.__create_frame()
@@ -229,9 +233,11 @@ class TrainingModal(tk.Toplevel):
 
         self.__build_iterations_info()
 
-        # self.progress_frame = self.__build_progress_frame()
+        self.progress_frame = self.__build_progress_frame()
 
-        # self.progress_bar = self.__build_progress_bar()
+        self.progress_bar = self.__build_progress_bar()
+
+        self.progress_label = self.__build_progress_label()
 
     # def __print_test(self):
     #     print(3*'\n', "TEST", 3*'\n')
@@ -239,6 +245,44 @@ class TrainingModal(tk.Toplevel):
     # def testLabel(self, col: int):
     #     label = tk.Label(self.modal_frame, text="test")
     #     label.grid(row=0, column=col)
+
+    def startTraining(self):
+
+        self.train_btn.configure(
+            bg="white",
+            fg="forest green",
+            text="Training...",
+            state=tk.DISABLED,
+        )
+
+        simulation = Simulation(self.strategy)
+
+        self.progress_bar['maximum'] = self.iter_num
+
+        if simulation is not None:
+
+            for i in range(self.iter_num):
+                simulation.simulateGame()
+
+                if i % 100 == 0 or i+1 == self.iter_num:
+
+                    self.progress_label.configure(
+                        text=f"{i} / {self.iter_num}")
+
+                    self.progress_bar['value'] = i
+                    self.progress_bar.update()
+
+            self.progress_label.configure(
+                text=f"{self.iter_num} / {self.iter_num}")
+
+            simulation.saveAgents()
+
+        self.train_btn.configure(
+            state=tk.NORMAL,
+            bg="forest green",
+            fg="white",
+            text="Train!"
+        )
 
     def getNumberOfIterations(self) -> int:
         return self.selected_num_of_iter
@@ -294,7 +338,7 @@ class TrainingModal(tk.Toplevel):
             row=12, column=0,
             columnspan=4,
             sticky="ew",
-            pady=(10, 0)
+            pady=(65, 0)
         )
 
         return info_label
@@ -377,7 +421,7 @@ class TrainingModal(tk.Toplevel):
 
         # Variable that stores Entry text that is shown to the user.
         entry_text = tk.StringVar()
-        entry_text.set("200000")
+        entry_text.set("200")
 
         def on_change(entry_text):
             self.selected_num_of_iter = entry_text.get()
@@ -557,35 +601,60 @@ class TrainingModal(tk.Toplevel):
 
     #     return
 
-    # def __build_progress_frame(self):
+    def __build_progress_frame(self):
 
-    #     progress_frame = tk.Frame(
-    #         self.base,
-    #         bg="white"
-    #     )
-    #     progress_frame.grid(
-    #         row=10, column=0,
-    #         columnspan=8,
-    #         rowspan=2,
-    #         sticky="ew"
-    #     )
+        progress_frame = tk.LabelFrame(
+            self.base,
+            bg="white",
+            fg="dark green",
+            text="Train info",
+            height=70
+        )
+        progress_frame.grid(
+            row=10, column=1,
+            columnspan=6,
+            rowspan=3,
+            sticky="ew",
+            pady=(20, 30)
+        )
 
-    #     return progress_frame
+        progress_frame.grid_propagate(0)
 
-    # def __build_progress_bar(self):
+        return progress_frame
 
-    #     progress_bar = Progressbar(
-    #         self.progress_frame,
-    #         orient=HORIZONTAL,
-    #         length=self.selected_num_of_iter,
-    #         mode='determinate'
-    #     )
+    def __build_progress_label(self):
 
-    #     progress_bar.grid(
-    #         row=0, column=0,
-    #     )
+        progress_label = tk.Label(
+            self.progress_frame,
+            text="0 / 200",
+            bg="white"
+        )
 
-    #     return progress_bar
+        progress_label.grid(
+            row=0, column=0,
+            pady=(0, 0)
+        )
+
+        return progress_label
+
+    def __build_progress_bar(self):
+
+        progress_bar = Progressbar(
+            self.progress_frame,
+            orient=HORIZONTAL,
+            length=self.selected_num_of_iter,
+            mode='determinate'
+        )
+
+        progress_bar.grid(
+            row=2, column=0,
+            columnspan=6,
+            rowspan=1,
+            padx=(50, 0),
+            pady=(0, 0)
+        )
+
+        return progress_bar
 
     def pass_train_data(self):
 
@@ -601,7 +670,9 @@ class TrainingModal(tk.Toplevel):
             if value == res[1]:
                 self.strategy = key
 
-        print("iter:", self.iter_num, "\n", "strategy:", self.strategy)
+        # print("iter:", self.iter_num, "\n", "strategy:", self.strategy)
+
+        self.startTraining()
 
         # from time import sleep
         # sleep(1)
@@ -625,13 +696,13 @@ class TrainingModal(tk.Toplevel):
             row=9, column=0,
             columnspan=4,
             rowspan=2,
-            pady=(10, 0)
+            pady=(10, 10)
         )
 
         return train_btn
 
     # def make_progress(self, iter_num: int):
-
+    #
     #     for i in range(iter_num):
     #         self.progress_bar['value'] = i
     #         # self.main_gui_master.update_idletasks()

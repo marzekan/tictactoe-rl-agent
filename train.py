@@ -188,6 +188,6 @@ class Simulation:
         datetime_str = now.strftime("%m_%d_%Y_%H_%M_%S")
 
         self.agentO.saveQStates(
-            f"trained_O_{str(self.agent_strategies)}_{datetime_str}.pkl")
+            f"saves/trained_O_{str(self.agent_strategies)}_{datetime_str}.pkl")
         self.agentX.saveQStates(
-            f"trained_X_{str(self.agent_strategies)}_{datetime_str}.pkl")
+            f"saves/trained_X_{str(self.agent_strategies)}_{datetime_str}.pkl")
