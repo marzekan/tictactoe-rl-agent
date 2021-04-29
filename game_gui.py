@@ -186,7 +186,11 @@ class TrainingModal(tk.Toplevel):
         # Default info label text.
         self.info_label_default = "Select strategy and number of iterations"
 
+        # Info about what training iterations represent.
         self.iteration_info_text = "Represents the number of games agent will play agains itself before playing you."
+
+        # Progress label text.
+        self.progress_text = ""
 
         self.base = tk.Toplevel()
         self.base.geometry("450x375")
@@ -199,10 +203,6 @@ class TrainingModal(tk.Toplevel):
 
         # Locking parent window when TrainingModal is created.
         self.__lock_gui_function()
-
-        # self.train_in_progress = True
-
-        self.progress_text = ""
 
         # Creating the frame to place all the widgets in.
         self.modal_frame = self.__create_frame()
@@ -231,15 +231,22 @@ class TrainingModal(tk.Toplevel):
         # Building iterations selection textbox.
         self.__build_iterations_textbox()
 
+        # Building iterations info label frame.
         self.__build_iterations_info()
 
+        # Frame that holds progress bar and label.
         self.progress_frame = self.__build_progress_frame()
 
+        # Shows training progress.
         self.progress_bar = self.__build_progress_bar()
 
+        # Shows training progress but in text.
         self.progress_label = self.__build_progress_label()
 
-    def startTraining(self):
+    # =========== TRAINING METHODS =========== #
+
+    # Trains agents.
+    def train(self):
 
         self.info_label.configure(text="Training...")
 
@@ -281,19 +288,17 @@ class TrainingModal(tk.Toplevel):
 
         self.info_label.configure(text="Done!", fg="green")
 
+    # Gets the number of training iterations inputed by the user.
     def getNumberOfIterations(self) -> int:
-        return self.selected_num_of_iter
 
-    def getSelectedStrategy(self) -> str:
-        return self.selected_strategy
-
-    def __set_selected_num_of_Iter(self, entry_text):
+        if not self.selected_num_of_iter:
+            return
 
         # Converts passed text to string.
-        entry_text = str(entry_text)
+        iter_num = str(self.selected_num_of_iter)
 
         # Entry isn't number or larger then 0.
-        if not entry_text.isdecimal():
+        if not iter_num.isdecimal():
 
             print("Iterations must be a number and larger then 0.")
 
@@ -309,19 +314,34 @@ class TrainingModal(tk.Toplevel):
             text=self.info_label_default
         )
 
-        return int(entry_text)
+        return int(iter_num)
 
-    def get_result_data(self):
-        iter_number = self.__set_selected_num_of_Iter(
-            self.getNumberOfIterations())
+        # return self.selected_num_of_iter
 
-        strategy = self.getSelectedStrategy()
+    # Gets user selected strategy.
+    def getSelectedStrategy(self) -> str:
 
-        data = (iter_number, strategy)
+        for key, value in self.training_options.items():
+            if value == self.selected_strategy:
+                strategy = key
 
-        if all(data):
-            print(data)
-            return data
+        return strategy
+
+    # Train button callback. Starts agent training.
+    def start_training(self):
+
+        self.iter_num = self.getNumberOfIterations()
+        self.strategy = self.getSelectedStrategy()
+
+        data = (self.iter_num, self.strategy)
+
+        if not all(data):
+            print("Some values are None.")
+            return
+
+        self.train()
+
+    # ============== COMPONENTS ============== #
 
     # Gives user feedback about the app.
     def __create_info_label(self):
@@ -566,6 +586,7 @@ class TrainingModal(tk.Toplevel):
         self.base.destroy()
         self.__unlock_gui_function()
 
+    # Builds frame that hold progress bar and label.
     def __build_progress_frame(self):
 
         progress_frame = tk.LabelFrame(
@@ -587,6 +608,7 @@ class TrainingModal(tk.Toplevel):
 
         return progress_frame
 
+    # Build label that shows progress info.
     def __build_progress_label(self):
 
         progress_label = tk.Label(
@@ -602,6 +624,7 @@ class TrainingModal(tk.Toplevel):
 
         return progress_label
 
+    # Builds progress bar showing training progress.
     def __build_progress_bar(self):
 
         progress_bar = Progressbar(
@@ -621,29 +644,7 @@ class TrainingModal(tk.Toplevel):
 
         return progress_bar
 
-    def pass_train_data(self):
-
-        res = self.get_result_data()
-
-        if not res:
-            print("Some values are None.")
-            return
-
-        self.iter_num = res[0]
-
-        for key, value in self.training_options.items():
-            if value == res[1]:
-                self.strategy = key
-
-        # print("iter:", self.iter_num, "\n", "strategy:", self.strategy)
-
-        self.startTraining()
-
-        # from time import sleep
-        # sleep(1)
-
-        # self.__onClosing()
-
+    # Builds training button. Starts agent training.
     def __build_train_button(self):
 
         train_btn = tk.Button(
@@ -654,7 +655,7 @@ class TrainingModal(tk.Toplevel):
             relief="groove",
             width=20,
             height=2,
-            command=self.pass_train_data
+            command=self.start_training
         )
 
         train_btn.grid(
