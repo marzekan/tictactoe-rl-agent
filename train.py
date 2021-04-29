@@ -182,9 +182,7 @@ class Simulation:
 
     def saveAgents(self, filepath: str):
 
-        print("in save:", filepath)
         filepath = filepath.replace("/", "\\")
-        print("in save:", filepath)
 
         # Give file default name if user passes empty filename.
         if filepath == "":
@@ -205,19 +203,17 @@ class Simulation:
         else:
 
             full_filename = os.path.basename(filepath)
-            print(full_filename)
             filename = os.path.splitext(full_filename)
-            print(filename)
+
             dirname = filename[0]
 
-            root_dir = filepath.replace(full_filename, '')
-            print(root_dir)
+            root_dir = filepath.replace(full_filename, '')[:-1]
 
             O_filename = f"trained_O_{''.join(filename)}"
             X_filename = f"trained_X_{''.join(filename)}"
 
-            O_full_path = f"{root_dir}{dirname}\\{O_filename}"
-            X_full_path = f"{root_dir}{dirname}\\{X_filename}"
+            O_full_path = f"{root_dir}\\{dirname}\\{O_filename}"
+            X_full_path = f"{root_dir}\\{dirname}\\{X_filename}"
 
             os.makedirs(f"{root_dir}\\{dirname}")
 

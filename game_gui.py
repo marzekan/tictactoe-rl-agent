@@ -297,7 +297,7 @@ class TrainingModal(tk.Toplevel):
 
         simulation.saveAgents(filename)
 
-        self.__onClosing()
+        # self.__onClosing()
 
     # Gets the number of training iterations inputed by the user.
     def getNumberOfIterations(self) -> int:
