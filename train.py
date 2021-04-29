@@ -36,6 +36,9 @@ class Simulation:
             about what game strategy agents use.
         '''
         if agent_strategies == "QQ":
+            self.agentX.setStrategy("q")
+            self.agentO.setStrategy("q")
+
             self.simulateGame = self.__simulateQQGame
 
         elif agent_strategies == "RQ":
@@ -45,9 +48,6 @@ class Simulation:
     def __simulateQQGame(self):
 
         self.board.resetBoard()
-
-        self.agentX.setStrategy("q")
-        self.agentO.setStrategy("q")
 
         while self.board.isGameOver() is False:
 
