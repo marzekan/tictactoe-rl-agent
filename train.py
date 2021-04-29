@@ -44,8 +44,6 @@ class Simulation:
     # Agents play agains the agent with same strategy.
     def __simulateQQGame(self):
 
-        print("QQ igra")
-
         self.board.resetBoard()
 
         self.agentX.setStrategy("q")
@@ -94,8 +92,6 @@ class Simulation:
 
     # Agents play againt agent with different strategy.
     def __simulateRQGame(self):
-
-        print("RQ igra")
 
         self.board.resetBoard()
 
