@@ -4,6 +4,8 @@ from rules import Board
 from time import sleep
 from datetime import datetime
 
+import os
+
 
 class Simulation:
     '''
@@ -178,12 +180,46 @@ class Simulation:
         self.agentO.strategy.resetHistoricStates()
         agent_rand.strategy.resetHistoricStates()
 
-    def saveAgents(self):
+    def saveAgents(self, filepath: str):
 
-        now = datetime.now()
-        datetime_str = now.strftime("%m_%d_%Y_%H_%M_%S")
+        print("in save:", filepath)
+        filepath = filepath.replace("/", "\\")
+        print("in save:", filepath)
 
-        self.agentO.saveQStates(
-            f"saves/trained_O_{str(self.agent_strategies)}_{datetime_str}.pkl")
-        self.agentX.saveQStates(
-            f"saves/trained_X_{str(self.agent_strategies)}_{datetime_str}.pkl")
+        # Give file default name if user passes empty filename.
+        if filepath == "":
+            now = datetime.now()
+            datetime_str = now.strftime("%m_%d_%Y_%H_%M_%S")
+
+            O_filename = f"trained_O_{str(self.agent_strategies)}_{datetime_str}.pkl"
+            X_filename = f"trained_X_{str(self.agent_strategies)}_{datetime_str}.pkl"
+
+            dirname = f"save_{str(self.agent_strategies)}_{datetime_str}"
+
+            O_full_path = f"saves\\{dirname}\\{O_filename}"
+            X_full_path = f"saves\\{dirname}\\{X_filename}"
+
+            os.makedirs(f"{dirname}")
+
+        # If filepath is provided, save there.
+        else:
+
+            full_filename = os.path.basename(filepath)
+            print(full_filename)
+            filename = os.path.splitext(full_filename)
+            print(filename)
+            dirname = filename[0]
+
+            root_dir = filepath.replace(full_filename, '')
+            print(root_dir)
+
+            O_filename = f"trained_O_{''.join(filename)}"
+            X_filename = f"trained_X_{''.join(filename)}"
+
+            O_full_path = f"{root_dir}{dirname}\\{O_filename}"
+            X_full_path = f"{root_dir}{dirname}\\{X_filename}"
+
+            os.makedirs(f"{root_dir}\\{dirname}")
+
+        self.agentO.saveQStates(O_full_path)
+        self.agentX.saveQStates(X_full_path)

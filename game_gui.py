@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from tkinter import HORIZONTAL
 from typing import Callable
 from tkinter.ttk import Progressbar
@@ -277,8 +277,6 @@ class TrainingModal(tk.Toplevel):
             self.progress_label.configure(
                 text=f"{self.iter_num} / {self.iter_num}")
 
-            simulation.saveAgents()
-
         self.train_btn.configure(
             state=tk.NORMAL,
             bg="forest green",
@@ -287,6 +285,19 @@ class TrainingModal(tk.Toplevel):
         )
 
         self.info_label.configure(text="Done!", fg="green")
+
+        direc = filedialog.asksaveasfilename(
+            defaultextension=".pkl",
+            filetypes=[("pickle files", "*.pkl")],
+            initialdir="saves/",
+            title="new_agent"
+        )
+
+        filename = direc.title()
+
+        simulation.saveAgents(filename)
+
+        self.__onClosing()
 
     # Gets the number of training iterations inputed by the user.
     def getNumberOfIterations(self) -> int:
