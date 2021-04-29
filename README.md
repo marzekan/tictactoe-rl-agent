@@ -10,6 +10,11 @@ The goal of this project was simple - to make agent learn to play the Tic-tac-to
 ![playing_gif](pictures/tictactoe.gif)
 
 
+## Features
+
+- Train RL agents (set number of training iteration and learning strategy).
+- Save/Load trained agents.
+
 ## 📜 Docs
 
 Run the code

@@ -39,7 +39,7 @@ class GameGUI(tk.Frame):
         self.yellow_col = '#E8C547'
         self.gray_col = '#71697A'
 
-    def createBoard(self, playerSetMove, reset, agent_sign, player_sign):
+    def createBoard(self, playerSetMove, reset, agent_sign, player_sign, load_game, game_name):
 
         # Create Frames
         self.board_frame = tk.Frame(self, bg=self.dark_blue_col)
@@ -78,7 +78,8 @@ class GameGUI(tk.Frame):
 
         # Create and place Status label
         self.status_label = tk.Label(self.board_frame, height=5, width=6,
-                                     text="You: " + player_sign + "\nAgent: " + agent_sign,
+                                     text="You: " + player_sign + "\nAgent: " +
+                                     agent_sign + "\nPlaying: " + game_name,
                                      font=self.font_normal_bold, fg=self.red_col, bg=self.dark_blue_col)
 
         self.status_label.grid(row=5, column=0, columnspan=3, sticky="ew")
@@ -88,15 +89,19 @@ class GameGUI(tk.Frame):
                                    font=self.font_normal_bold, bg=self.red_col, fg=self.dark_blue_col, command=lambda: reset())
         self.train_btn = tk.Button(self.board_frame, height=2, width=16, text='TRAIN AGENT',
                                    font=self.font_normal_bold, bg=self.red_col, fg=self.dark_blue_col, command=lambda: self.build_traning_modal())
+        self.load_btn = tk.Button(self.board_frame, height=2, width=16, text="LOAD AGENT",
+                                  font=self.font_normal_bold, bg=self.red_col, fg=self.dark_blue_col, command=lambda: self.open_load_dialog(load_game))
+
         self.reset_btn.grid(row=6, column=0, columnspan=3, sticky='ew')
         self.train_btn.grid(row=7, column=0, columnspan=3, sticky='ew')
+        self.load_btn.grid(row=8, column=0, columnspan=3, sticky='ew')
 
         # Create and place training label
         self.progress_label = tk.Label(self.board_frame, height=1, width=6,
                                        text="Agent is not trained yet.",
                                        font='SegoeUI 10', fg=self.red_col, bg=self.dark_blue_col)
 
-        self.progress_label.grid(row=8, column=0, columnspan=3, sticky="ew")
+        self.progress_label.grid(row=9, column=0, columnspan=3, sticky="ew")
 
     def updateBoardBySetting(self, setting):
         for i in range(9):
@@ -134,25 +139,41 @@ class GameGUI(tk.Frame):
             bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
         self.train_btn.configure(
             bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
+        self.load_btn.configure(
+            bg=self.dark_blue_col, fg=self.gray_col, state=tk.DISABLED)
         self.updateStatusLabelText("Training in progress")
         self.progress_label.configure(fg=self.yellow_col)
         self.status_label.update()
 
     # enable all buttons on the screen
     def setGuiToEndTraining(self):
+
         for i in range(9):
             board_buttons[i].configure(
                 bg=self.dark_blue_col, fg=self.honeydew_col, state=tk.NORMAL)
+
         self.reset_btn.configure(
-            bg=self.yellow_col, fg=self.dark_blue_col, state=tk.NORMAL)
+            bg=self.red_col, fg=self.dark_blue_col, state=tk.NORMAL)
+
         self.train_btn.configure(
             bg=self.red_col, fg=self.dark_blue_col, state=tk.NORMAL)
+
+        self.load_btn.configure(
+            bg=self.yellow_col, fg=self.dark_blue_col, state=tk.NORMAL)
+
         self.updateStatusLabelText(
-            "Training ended.\nPress restart to start game")
+            "Training ended.\nLoad Agent to play him.")
+
         self.progress_label.configure(fg=self.red_col)
 
     def setResetBtnToDefaultColor(self):
         self.reset_btn.configure(bg=self.red_col, fg=self.dark_blue_col)
+
+    def setLoadBtnToDefaultColor(self):
+        self.load_btn.configure(bg=self.red_col, fg=self.dark_blue_col)
+
+    def hightlightResetBtn(self):
+        self.reset_btn.configure(bg=self.yellow_col, fg=self.dark_blue_col)
 
     def build_traning_modal(self):
 
@@ -161,6 +182,15 @@ class GameGUI(tk.Frame):
             self.setGuiToStartTraining,
             self.setGuiToEndTraining
         )
+
+    def open_load_dialog(self, load_game_function):
+        load_dialog = filedialog.askdirectory(
+            initialdir="saves/"
+        )
+
+        save_folder = load_dialog.title()
+
+        load_game_function(save_folder)
 
 
 class TrainingModal(tk.Toplevel):
@@ -297,7 +327,7 @@ class TrainingModal(tk.Toplevel):
 
         simulation.saveAgents(filename)
 
-        # self.__onClosing()
+        self.__onClosing()
 
     # Gets the number of training iterations inputed by the user.
     def getNumberOfIterations(self) -> int:
@@ -326,8 +356,6 @@ class TrainingModal(tk.Toplevel):
         )
 
         return int(iter_num)
-
-        # return self.selected_num_of_iter
 
     # Gets user selected strategy.
     def getSelectedStrategy(self) -> str:

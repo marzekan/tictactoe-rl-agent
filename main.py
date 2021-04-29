@@ -15,9 +15,11 @@ class GameBoard():
         self.agentSign = "O"
         self.agent = Agent(self.board.setting, self.agentSign, strategy="q")
 
+        self.game_name = "New (random)"
+
         self.gui = GameGUI()
         self.gui.createBoard(self.playerSetMove, self.reset,
-                             self.agentSign, self.playerSign)
+                             self.agentSign, self.playerSign, self.loadGame, self.game_name)
 
         self.checkIfAgentTrained()
 
@@ -57,7 +59,7 @@ class GameBoard():
                 statusText = "It's a draw."
 
             else:
-                statusText = "Game over!\nThe winner is:" + winner
+                statusText = "Game over!\nThe winner is: " + winner
 
             self.gui.updateStatusLabelText(statusText)
             return True
@@ -69,21 +71,27 @@ class GameBoard():
         self.board.resetBoard()
         self.gui.updateBoardBySetting(self.board.setting)
         self.gui.updateStatusLabelText(
-            "You: " + self.playerSign + "\nAgent: " + self.agentSign)
+            "You: " + self.playerSign + "\nAgent: " + self.agentSign + "\nPlaying: " + self.game_name)
         self.gui.setResetBtnToDefaultColor()
         self.checkIfAgentTrained()
 
-    # check if .pkl file exists
-    def checkIfAgentTrained(self):
+    def loadGame(self, folder):
 
-        files = os.listdir('.')
-        save_file = ""
+        if folder == "":
+            return
 
-        for file in files:
-            if "trained_O" in file:
+        folder = folder.replace("/", "\\")
+
+        self.game_name = folder.split("\\")[-1]
+
+        save_files = os.listdir(folder)
+
+        for file in save_files:
+            if f"trained_{self.agent.sign}" in file:
                 save_file = file
+
         try:
-            self.agent.loadQStates(save_file)
+            self.agent.loadQStates(f"{folder}\\{save_file}")
             self.agent.turnOffExploration()
 
         except IOError:
@@ -91,6 +99,17 @@ class GameBoard():
             return
 
         self.gui.updateProgressLabelText("Agent is trained and ready to play.")
+        self.gui.updateStatusLabelText("Agent loaded. Restart to play.")
+        self.gui.hightlightResetBtn()
+        self.gui.setLoadBtnToDefaultColor()
+
+    # check if .pkl file exists
+    def checkIfAgentTrained(self):
+
+        if self.agent.strategy.states == {}:
+            self.gui.updateProgressLabelText(
+                "Agent not trained. He will play random moves.")
+            return
 
 
 if __name__ == "__main__":
