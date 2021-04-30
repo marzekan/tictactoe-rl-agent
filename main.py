@@ -40,7 +40,8 @@ class GameBoard():
         self.gui.setSignIntoBoardPosition(self.playerSign, buttonNumber)
 
         if self.checkGameOver():
-            self.playerScore += 1
+            if self.board.checkWinner() is not None:
+                self.playerScore += 1
             return
 
         self.agentSetMove()
@@ -58,7 +59,8 @@ class GameBoard():
         self.gui.updateBoardBySetting(self.board.setting)
 
         if self.checkGameOver():
-            self.agentScore += 1
+            if self.board.checkWinner() is not None:
+                self.agentScore += 1
             return
 
     def checkGameOver(self):
@@ -81,6 +83,8 @@ class GameBoard():
 
     # resets the board and checks if the agent is trained
     def reset(self):
+
+        self.gui.setLoadBtnToDefaultColor()
 
         # Switch player signs.
         self.playerSign = "O" if self.playerSign == "X" else "X"
