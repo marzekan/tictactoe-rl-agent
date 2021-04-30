@@ -197,7 +197,7 @@ class Simulation:
             O_full_path = f"saves\\{dirname}\\{O_filename}"
             X_full_path = f"saves\\{dirname}\\{X_filename}"
 
-            os.makedirs(f"{dirname}")
+            os.makedirs(f"saves\\{dirname}")
 
         # If filepath is provided, save there.
         else:
