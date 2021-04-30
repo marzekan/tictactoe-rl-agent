@@ -21,6 +21,11 @@ class GameBoard():
 
         self.checkIfAgentTrained()
 
+    # Makes agent play first if his sign is 'X'.
+    def decideFirstPlayer(self):
+        if self.agentSign == "X":
+            self.agentSetMove()
+
     # When player clicks on the board. Area is marked with players sign.
     # Afterwards player signals agent to play if the game is not over.
     def playerSetMove(self, buttonNumber):
@@ -66,12 +71,20 @@ class GameBoard():
 
     # resets the board and checks if the agent is trained
     def reset(self):
+
+        # Switch player signs.
+        self.playerSign = "O" if self.playerSign == "X" else "X"
+        self.agentSign = "O" if self.playerSign == "X" else "X"
+
         self.board.resetBoard()
+
         self.gui.updateBoardBySetting(self.board.setting)
         self.gui.updateStatusLabelText(
             "You: " + self.playerSign + "\nAgent: " + self.agentSign)
         self.gui.setResetBtnToDefaultColor()
         self.checkIfAgentTrained()
+
+        self.decideFirstPlayer()
 
     # check if .pkl file exists
     def checkIfAgentTrained(self):
