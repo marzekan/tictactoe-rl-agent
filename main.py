@@ -13,13 +13,18 @@ class GameBoard():
         self.board = Board()
         self.playerSign = "X"
         self.agentSign = "O"
+        self.agentScore = 0
+        self.playerScore = 0
+
+        score = (self.playerScore, self.agentScore)
+
         self.agent = Agent(self.board.setting, self.agentSign, strategy="q")
 
         self.game_name = "New (random)"
 
         self.gui = GameGUI()
         self.gui.createBoard(self.playerSetMove, self.reset,
-                             self.agentSign, self.playerSign, self.loadGame, self.game_name)
+                             self.agentSign, self.playerSign, self.loadGame, self.game_name, score)
 
         self.checkIfAgentTrained()
 
@@ -35,6 +40,7 @@ class GameBoard():
         self.gui.setSignIntoBoardPosition(self.playerSign, buttonNumber)
 
         if self.checkGameOver():
+            self.playerScore += 1
             return
 
         self.agentSetMove()
@@ -51,7 +57,9 @@ class GameBoard():
 
         self.gui.updateBoardBySetting(self.board.setting)
 
-        self.checkGameOver()
+        if self.checkGameOver():
+            self.agentScore += 1
+            return
 
     def checkGameOver(self):
         if self.board.isGameOver() is True:
@@ -78,6 +86,8 @@ class GameBoard():
         self.playerSign = "O" if self.playerSign == "X" else "X"
         self.agentSign = "O" if self.playerSign == "X" else "X"
 
+        score = (self.playerScore, self.agentScore)
+
         if self.agent.game_loaded:
             self.agent.setQvalues(self.agentSign)
 
@@ -85,7 +95,14 @@ class GameBoard():
 
         self.gui.updateBoardBySetting(self.board.setting)
         self.gui.updateStatusLabelText(
-            "You: " + self.playerSign + "\nAgent: " + self.agentSign + "\nPlaying: " + self.game_name)
+            "You: " + self.playerSign
+                    + "\nAgent: " + self.agentSign
+                    + "\n"
+                    + "\nPlaying: " + self.game_name
+                    + "\n\n"
+                    + "Score:\n"
+                    + f"You: {score[0]} - Agent: {score[1]}"
+        )
         self.gui.setResetBtnToDefaultColor()
         self.checkIfAgentTrained()
 
@@ -110,8 +127,12 @@ class GameBoard():
 
         self.gui.updateProgressLabelText("Agent is trained and ready to play.")
         self.gui.updateStatusLabelText("Agent loaded. Restart to play.")
+        self.gui.disableAllBoardButtons()
         self.gui.hightlightResetBtn()
         self.gui.setLoadBtnToDefaultColor()
+
+        self.agentScore = 0
+        self.playerScore = 0
 
     # check if .pkl file exists
     def checkIfAgentTrained(self):

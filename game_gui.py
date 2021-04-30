@@ -39,7 +39,7 @@ class GameGUI(tk.Frame):
         self.yellow_col = '#E8C547'
         self.gray_col = '#71697A'
 
-    def createBoard(self, playerSetMove, reset, agent_sign, player_sign, load_game, game_name):
+    def createBoard(self, playerSetMove, reset, agent_sign, player_sign, load_game, game_name, score):
 
         # Create Frames
         self.board_frame = tk.Frame(self, bg=self.dark_blue_col)
@@ -77,9 +77,14 @@ class GameGUI(tk.Frame):
         board_buttons[8].grid(row=4, column=2)
 
         # Create and place Status label
-        self.status_label = tk.Label(self.board_frame, height=5, width=6,
-                                     text="You: " + player_sign + "\nAgent: " +
-                                     agent_sign + "\nPlaying: " + game_name,
+        self.status_label = tk.Label(self.board_frame, height=8, width=6,
+                                     text="You: " + player_sign
+                                     + "\nAgent: " + agent_sign
+                                     + "\n"
+                                     + "\nPlaying: " + game_name
+                                     + "\n\n"
+                                     + "Score:\n"
+                                     + f"You: {score[0]} - Agent: {score[1]}",
                                      font=self.font_normal_bold, fg=self.red_col, bg=self.dark_blue_col)
 
         self.status_label.grid(row=5, column=0, columnspan=3, sticky="ew")
