@@ -2,6 +2,8 @@ import random
 import pickle
 from brain import QLearning, Random
 
+import os
+
 
 class Agent:
     def __new__(cls, setting, agentSign, strategy="random"):
@@ -15,11 +17,17 @@ class Agent:
 
         self.states = setting
         self.sign = agentSign
+        self.O_Qvalues = None
+        self.X_Qvalues = None
+        self.game_loaded = False
 
         if strategy == "q":
             self.strategy = QLearning()
         elif strategy == "random":
             self.strategy = Random()
+
+        if self.game_loaded == True:
+            self.setQvalues(self.sign)
 
         self.actions = self.getAvailablePos()
 
@@ -71,14 +79,34 @@ class Agent:
             self.sign = "X"
 
     # Saves Q values to pickle file.
-
     def saveQStates(self, file_name):
         Qvalues = self.strategy.states
         with open(file_name, "wb") as file:
             pickle.dump(Qvalues, file)
 
+    def setQvalues(self, Q_sign: str):
+        if type(self.strategy) == QLearning:
+            if Q_sign == "X":
+                self.strategy.states = self.X_Qvalues
+            elif Q_sign == "O":
+                self.strategy.states = self.O_Qvalues
+
     # Loads Q values from pickle file.
-    def loadQStates(self, file_name):
-        with open(file_name, "rb") as file:
-            Qvalues = pickle.load(file)
-        self.strategy.states = Qvalues
+    def loadQStates(self, save_folder: str):
+
+        save_files = os.listdir(save_folder)
+
+        if len(save_files) == 0:
+            return
+
+        O_file = next(elem for elem in save_files if "trained_O" in elem)
+        X_file = next(elem for elem in save_files if "trained_X" in elem)
+
+        with open(f"{save_folder}\\{O_file}", "rb") as file:
+            self.O_Qvalues = pickle.load(file)
+
+        with open(f"{save_folder}\\{X_file}", "rb") as file:
+            self.X_Qvalues = pickle.load(file)
+
+        # This way App knows that Q values came from a file.
+        self.game_loaded = True

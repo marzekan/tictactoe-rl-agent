@@ -78,6 +78,9 @@ class GameBoard():
         self.playerSign = "O" if self.playerSign == "X" else "X"
         self.agentSign = "O" if self.playerSign == "X" else "X"
 
+        if self.agent.game_loaded:
+            self.agent.setQvalues(self.agentSign)
+
         self.board.resetBoard()
 
         self.gui.updateBoardBySetting(self.board.setting)
@@ -97,14 +100,8 @@ class GameBoard():
 
         self.game_name = folder.split("\\")[-1]
 
-        save_files = os.listdir(folder)
-
-        for file in save_files:
-            if f"trained_{self.agent.sign}" in file:
-                save_file = file
-
         try:
-            self.agent.loadQStates(f"{folder}\\{save_file}")
+            self.agent.loadQStates(f"{folder}")
             self.agent.turnOffExploration()
 
         except IOError:
